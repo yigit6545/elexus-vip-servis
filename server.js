@@ -1,5 +1,5 @@
 const express = require('express');
-const sqlite3 = require('sqlite3').verbose();
+const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
@@ -16,15 +16,22 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // JWT secret key (production'da environment variable kullanın)
-const JWT_SECRET = 'elexus-vip-service-secret-key-2024';
+const JWT_SECRET = process.env.JWT_SECRET || 'elexus-vip-service-secret-key-2024';
 
-// Veritabanı bağlantısı
-const dbPath = path.join(__dirname, 'vip_service.db');
-const db = new sqlite3.Database(dbPath, (err) => {
+// PostgreSQL veritabanı bağlantısı
+const pool = new Pool({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+        rejectUnauthorized: false
+    }
+});
+
+// Veritabanı bağlantısını test et
+pool.query('SELECT NOW()', (err, res) => {
     if (err) {
-        console.error('Veritabanına bağlanırken hata:', err.message);
+        console.error('PostgreSQL veritabanına bağlanırken hata:', err.message);
     } else {
-        console.log('SQLite veritabanına başarıyla bağlandı.');
+        console.log('PostgreSQL veritabanına başarıyla bağlandı.');
     }
 });
 
@@ -91,14 +98,16 @@ app.post('/api/login', (req, res) => {
         return res.status(400).json({ error: 'Kullanıcı adı ve şifre gerekli' });
     }
 
-    db.get('SELECT * FROM users WHERE username = ?', [username], async (err, user) => {
+    pool.query('SELECT * FROM users WHERE username = $1', [username], async (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
 
-        if (!user) {
+        if (result.rows.length === 0) {
             return res.status(401).json({ error: 'Geçersiz kullanıcı adı veya şifre' });
         }
+
+        const user = result.rows[0];
 
         try {
             const isValidPassword = await bcrypt.compare(password, user.password);
@@ -108,7 +117,7 @@ app.post('/api/login', (req, res) => {
             }
 
             // Son giriş zamanını güncelle
-            db.run('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = ?', [user.id]);
+            pool.query('UPDATE users SET last_login = CURRENT_TIMESTAMP WHERE id = $1', [user.id]);
 
             // JWT token oluştur
             const token = jwt.sign(
@@ -147,14 +156,14 @@ app.get('/api/guests', authenticateToken, (req, res) => {
     let conditions = [];
 
     if (search) {
-        conditions.push(`(name LIKE ? OR alcohol LIKE ? OR cigarette LIKE ? OR cigar LIKE ? OR special_requests LIKE ? OR other_info LIKE ?)`);
+        conditions.push(`(name LIKE $${params.length + 1} OR alcohol LIKE $${params.length + 2} OR cigarette LIKE $${params.length + 3} OR cigar LIKE $${params.length + 4} OR special_requests LIKE $${params.length + 5} OR other_info LIKE $${params.length + 6})`);
         const searchTerm = `%${search}%`;
         params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
     }
 
     if (class_filter) {
         const classes = class_filter.split(',');
-        conditions.push(`class IN (${classes.map(() => '?').join(',')})`);
+        conditions.push(`class IN (${classes.map(() => '$').join(',')})`);
         params.push(...classes);
     }
 
@@ -164,11 +173,11 @@ app.get('/api/guests', authenticateToken, (req, res) => {
 
     query += ' ORDER BY created_at DESC';
 
-    db.all(query, params, (err, guests) => {
+    pool.query(query, params, (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
-        res.json(guests);
+        res.json(result.rows);
     });
 });
 
@@ -184,23 +193,24 @@ app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) =>
 
     const query = `
         INSERT INTO guests (name, class, photo_path, alcohol, cigarette, cigar, special_requests, other_info, created_by)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        RETURNING *
     `;
 
-    db.run(query, [
+    pool.query(query, [
         name, guestClass, photoPath, alcohol || '', cigarette || '', cigar || '', 
         specialRequests || '', otherInfo || '', req.user.id
-    ], function(err) {
+    ], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Misafir eklenirken hata oluştu' });
         }
 
         // Eklenen misafiri getir
-        db.get('SELECT * FROM guests WHERE id = ?', [this.lastID], (err, guest) => {
+        pool.query('SELECT * FROM guests WHERE id = $1', [result.rows[0].id], (err, guestResult) => {
             if (err) {
                 return res.status(500).json({ error: 'Misafir bilgileri alınamadı' });
             }
-            res.status(201).json(guest);
+            res.status(201).json(guestResult.rows[0]);
         });
     });
 });
@@ -221,26 +231,27 @@ app.put('/api/guests/:id', authenticateToken, upload.single('photo'), (req, res)
 
     const query = `
         UPDATE guests 
-        SET name = ?, class = ?, alcohol = ?, cigarette = ?, cigar = ?, 
-            special_requests = ?, other_info = ?, updated_at = CURRENT_TIMESTAMP
-        ${photoPath ? ', photo_path = ?' : ''}
-        WHERE id = ?
+        SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
+            special_requests = $6, other_info = $7, updated_at = CURRENT_TIMESTAMP
+        ${photoPath ? ', photo_path = $8' : ''}
+        WHERE id = $9
+        RETURNING *
     `;
 
     const params = photoPath ? 
         [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', photoPath, id] :
         [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', id];
 
-    db.run(query, params, function(err) {
+    pool.query(query, params, (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Misafir güncellenirken hata oluştu' });
         }
 
-        if (this.changes === 0) {
+        if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Misafir bulunamadı' });
         }
 
-        res.json({ message: 'Misafir başarıyla güncellendi' });
+        res.json(result.rows[0]);
     });
 });
 
@@ -252,19 +263,19 @@ app.get('/api/guests/:id', authenticateToken, (req, res) => {
         SELECT g.*, u.full_name as created_by_name
         FROM guests g
         LEFT JOIN users u ON g.created_by = u.id
-        WHERE g.id = ?
+        WHERE g.id = $1
     `;
 
-    db.get(query, [id], (err, guest) => {
+    pool.query(query, [id], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
 
-        if (!guest) {
+        if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Misafir bulunamadı' });
         }
 
-        res.json(guest);
+        res.json(result.rows[0]);
     });
 });
 
@@ -273,14 +284,16 @@ app.delete('/api/guests/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
 
     // Önce misafir bilgilerini al (fotoğraf silmek için)
-    db.get('SELECT photo_path FROM guests WHERE id = ?', [id], (err, guest) => {
+    pool.query('SELECT photo_path FROM guests WHERE id = $1', [id], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
 
-        if (!guest) {
+        if (result.rows.length === 0) {
             return res.status(404).json({ error: 'Misafir bulunamadı' });
         }
+
+        const guest = result.rows[0];
 
         // Fotoğrafı sil
         if (guest.photo_path) {
@@ -291,7 +304,7 @@ app.delete('/api/guests/:id', authenticateToken, (req, res) => {
         }
 
         // Misafiri sil
-        db.run('DELETE FROM guests WHERE id = ?', [id], function(err) {
+        pool.query('DELETE FROM guests WHERE id = $1', [id], (err) => {
             if (err) {
                 return res.status(500).json({ error: 'Misafir silinirken hata oluştu' });
             }
@@ -306,17 +319,14 @@ app.post('/api/guests/:id/visits', authenticateToken, (req, res) => {
     const { id } = req.params;
     const { notes } = req.body;
 
-    const query = 'INSERT INTO guest_visits (guest_id, notes, created_by) VALUES (?, ?, ?)';
+    const query = 'INSERT INTO guest_visits (guest_id, notes, created_by) VALUES ($1, $2, $3) RETURNING *';
 
-    db.run(query, [id, notes || '', req.user.id], function(err) {
+    pool.query(query, [id, notes || '', req.user.id], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Ziyaret kaydı eklenirken hata oluştu' });
         }
 
-        res.status(201).json({ 
-            message: 'Ziyaret kaydı eklendi',
-            visitId: this.lastID 
-        });
+        res.status(201).json(result.rows[0]);
     });
 });
 
@@ -328,26 +338,26 @@ app.get('/api/guests/:id/visits', authenticateToken, (req, res) => {
         SELECT gv.*, u.full_name as created_by_name
         FROM guest_visits gv
         LEFT JOIN users u ON gv.created_by = u.id
-        WHERE gv.guest_id = ?
+        WHERE gv.guest_id = $1
         ORDER BY gv.visit_date DESC
     `;
 
-    db.all(query, [id], (err, visits) => {
+    pool.query(query, [id], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
-        res.json(visits);
+        res.json(result.rows);
     });
 });
 
 // Kullanıcı profilini getir
 app.get('/api/profile', authenticateToken, (req, res) => {
-    db.get('SELECT id, username, full_name, role, created_at, last_login FROM users WHERE id = ?', 
-        [req.user.id], (err, user) => {
+    pool.query('SELECT id, username, full_name, role, created_at, last_login FROM users WHERE id = $1', 
+        [req.user.id], (err, result) => {
         if (err) {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
-        res.json(user);
+        res.json(result.rows[0]);
     });
 });
 
@@ -355,9 +365,9 @@ app.get('/api/profile', authenticateToken, (req, res) => {
 app.get('/api/stats', authenticateToken, (req, res) => {
     const queries = {
         totalGuests: 'SELECT COUNT(*) as count FROM guests',
-        vipGuests: 'SELECT COUNT(*) as count FROM guests WHERE class = "VIP"',
+        vipGuests: 'SELECT COUNT(*) as count FROM guests WHERE class = \'VIP\'',
         totalVisits: 'SELECT COUNT(*) as count FROM guest_visits',
-        recentVisits: 'SELECT COUNT(*) as count FROM guest_visits WHERE visit_date >= date("now", "-7 days")',
+        recentVisits: 'SELECT COUNT(*) as count FROM guest_visits WHERE visit_date >= CURRENT_DATE - INTERVAL \'7 days\'',
         classDistribution: 'SELECT class, COUNT(*) as count FROM guests GROUP BY class'
     };
 
@@ -366,14 +376,14 @@ app.get('/api/stats', authenticateToken, (req, res) => {
     const totalQueries = Object.keys(queries).length;
 
     Object.keys(queries).forEach(key => {
-        db.get(queries[key], (err, result) => {
+        pool.query(queries[key], (err, result) => {
             if (err) {
                 console.error(`${key} sorgusu hatası:`, err);
             } else {
                 if (key === 'classDistribution') {
-                    db.all(queries[key], (err, results) => {
+                    pool.query(queries[key], (err, results) => {
                         if (!err) {
-                            stats[key] = results;
+                            stats[key] = results.rows;
                         }
                         completedQueries++;
                         if (completedQueries === totalQueries) {
@@ -381,7 +391,7 @@ app.get('/api/stats', authenticateToken, (req, res) => {
                         }
                     });
                 } else {
-                    stats[key] = result.count;
+                    stats[key] = result.rows[0].count;
                     completedQueries++;
                     if (completedQueries === totalQueries) {
                         res.json(stats);

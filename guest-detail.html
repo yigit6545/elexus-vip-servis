@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Misafir Detayı - Elexus VIP Servis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Guest Detail Modal -->
+    <div id="guestDetailModal" class="modal guest-detail-modal">
+        <div class="modal-content guest-detail-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-user-circle"></i> Misafir Detayları</h2>
+                <button class="close-btn" onclick="closeGuestDetail()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="guest-detail-body">
+                <!-- Guest Info Section -->
+                <div class="guest-info-section">
+                    <div class="guest-profile">
+                        <div class="guest-photo-large">
+                            <span id="guestInitials">AY</span>
+                        </div>
+                        <div class="guest-basic-info">
+                            <h3 id="guestName">Ahmet Yılmaz</h3>
+                            <div class="guest-class-badge" id="guestClass">VIP</div>
+                            <div class="guest-id">ID: <span id="guestId">1</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Guest Details Grid -->
+                <div class="guest-details-grid">
+                    <div class="detail-card">
+                        <div class="detail-card-header">
+                            <i class="fas fa-wine-glass"></i>
+                            <h4>İçecek Tercihleri</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-row">
+                                <span class="detail-label">İçtiği Alkol:</span>
+                                <span class="detail-value" id="guestAlcohol">Whiskey, Vodka</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">İçtiği Sigara:</span>
+                                <span class="detail-value" id="guestCigarette">Marlboro Gold</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">İçtiği Puro:</span>
+                                <span class="detail-value" id="guestCigar">Cohiba</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-card-header">
+                            <i class="fas fa-star"></i>
+                            <h4>Özel İstekler</h4>
+                        </div>
+                        <div class="detail-content">
+                            <p id="guestSpecialRequests">Özel masada oturmak istiyor</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-card-header">
+                            <i class="fas fa-info-circle"></i>
+                            <h4>Diğer Bilgiler</h4>
+                        </div>
+                        <div class="detail-content">
+                            <p id="guestOtherInfo">Düzenli müşteri, her hafta geliyor</p>
+                        </div>
+                    </div>
+
+                    <div class="detail-card">
+                        <div class="detail-card-header">
+                            <i class="fas fa-calendar-alt"></i>
+                            <h4>Kayıt Bilgileri</h4>
+                        </div>
+                        <div class="detail-content">
+                            <div class="detail-row">
+                                <span class="detail-label">Eklenme Tarihi:</span>
+                                <span class="detail-value" id="guestCreatedAt">01.01.2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Son Güncelleme:</span>
+                                <span class="detail-value" id="guestUpdatedAt">01.01.2024</span>
+                            </div>
+                            <div class="detail-row">
+                                <span class="detail-label">Ekleyen:</span>
+                                <span class="detail-value" id="guestCreatedBy">Admin</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Visit History Section -->
+                <div class="visit-history-section">
+                    <div class="section-header">
+                        <h3><i class="fas fa-history"></i> Ziyaret Geçmişi</h3>
+                        <button class="add-visit-btn" onclick="addNewVisit()">
+                            <i class="fas fa-plus"></i> Yeni Ziyaret
+                        </button>
+                    </div>
+                    <div class="visit-list" id="visitList">
+                        <!-- Visits will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <button class="edit-guest-btn" onclick="editGuest()">
+                        <i class="fas fa-edit"></i> Düzenle
+                    </button>
+                    <button class="delete-guest-btn" onclick="deleteGuest()">
+                        <i class="fas fa-trash"></i> Sil
+                    </button>
+                    <button class="back-btn" onclick="closeGuestDetail()">
+                        <i class="fas fa-arrow-left"></i> Geri Dön
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Visit Modal -->
+    <div id="addVisitModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-plus"></i> Yeni Ziyaret Ekle</h2>
+            <form id="addVisitForm">
+                <div class="form-group">
+                    <label>Ziyaret Notları</label>
+                    <textarea id="visitNotes" placeholder="Ziyaret hakkında notlar..." required></textarea>
+                </div>
+                <div class="form-buttons">
+                    <button type="submit" class="save-btn">Kaydet</button>
+                    <button type="button" class="cancel-btn" onclick="closeAddVisitModal()">İptal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="guest-detail.js"></script>
+</body>
+</html> 

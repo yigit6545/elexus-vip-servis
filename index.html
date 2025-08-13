@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Elexus Casino - VIP Servis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <h2><i class="fas fa-crown"></i> Elexus VIP Servis</h2>
+            <form id="loginForm">
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="username" placeholder="Kullanıcı Adı" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="password" placeholder="Şifre" required>
+                </div>
+                <button type="submit" class="login-btn">Giriş Yap</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="mainContent" class="hidden">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <h1><i class="fas fa-crown"></i> VIP Servis</h1>
+                <div class="header-controls">
+                    <div class="search-container">
+                        <input type="text" id="searchInput" placeholder="Misafir ara...">
+                        <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    </div>
+                    <button id="filterBtn" class="filter-btn">
+                        <i class="fas fa-filter"></i> Filtrele
+                    </button>
+                    <button id="addGuestBtn" class="add-btn">
+                        <i class="fas fa-plus"></i> Misafir Ekle
+                    </button>
+                    <button id="logoutBtn" class="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Filter Panel -->
+        <div id="filterPanel" class="filter-panel hidden">
+            <div class="filter-content">
+                <h3>Filtreleme Seçenekleri</h3>
+                <div class="filter-options">
+                    <label><input type="checkbox" value="VIP" checked> VIP</label>
+                    <label><input type="checkbox" value="A" checked> A Grubu</label>
+                    <label><input type="checkbox" value="B" checked> B Grubu</label>
+                    <label><input type="checkbox" value="C" checked> C Grubu</label>
+                    <label><input type="checkbox" value="D" checked> D Grubu</label>
+                    <label><input type="checkbox" value="Lokal" checked> Lokal</label>
+                </div>
+                <button id="applyFilter" class="apply-filter-btn">Uygula</button>
+            </div>
+        </div>
+
+        <!-- Guest List -->
+        <main class="main-content">
+            <div id="guestList" class="guest-list">
+                <!-- Guest cards will be populated here -->
+            </div>
+        </main>
+
+
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html> 

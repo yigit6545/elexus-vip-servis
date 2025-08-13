@@ -32,6 +32,7 @@ pool.query('SELECT NOW()', (err, res) => {
         console.error('PostgreSQL veritabanına bağlanırken hata:', err.message);
     } else {
         console.log('PostgreSQL veritabanına başarıyla bağlandı.');
+        console.log(`Sunucu ${PORT} portunda çalışıyor`);
     }
 });
 
@@ -419,9 +420,7 @@ app.use((req, res) => {
 // Sunucuyu başlat
 app.listen(PORT, () => {
     console.log(`🚀 Elexus VIP Servis API sunucusu ${PORT} portunda çalışıyor`);
-    console.log(`📱 Frontend: http://localhost:${PORT}`);
-    console.log(`🔧 API: http://localhost:${PORT}/api`);
-    console.log(`\n📋 Kullanım:`);
+    console.log(`📋 Kullanım:`);
     console.log(`- npm run init-db: Veritabanını başlat`);
     console.log(`- npm start: Sunucuyu başlat`);
     console.log(`- npm run dev: Geliştirme modunda başlat`);

@@ -540,17 +540,17 @@ class VIPService {
 
         // Modal'ı düzenleme modunda aç
         const modal = document.getElementById('addGuestModal');
-        const title = modal.querySelector('h2');
-        const form = document.getElementById('addGuestForm');
-        const saveBtn = form.querySelector('.save-btn');
+        if (modal) {
+            const title = modal.querySelector('h2');
+            const form = modal.querySelector('#addGuestForm');
+            const saveBtn = modal.querySelector('.submit-btn');
 
-        title.textContent = 'Misafir Düzenle';
-        saveBtn.textContent = 'Güncelle';
-        
-        // Form submit event'ini değiştir
-        form.onsubmit = (e) => this.handleUpdateGuest(e, guestId);
-        
-        modal.style.display = 'flex';
+            if (title) title.textContent = 'Misafir Düzenle';
+            if (saveBtn) saveBtn.textContent = 'Güncelle';
+            if (form) form.onsubmit = (e) => this.handleUpdateGuest(e, guestId);
+            
+            modal.style.display = 'flex';
+        }
     }
 
     // Misafir güncelleme
@@ -593,7 +593,7 @@ class VIPService {
             this.showNotification('Misafir başarıyla güncellendi!', 'success');
             
             // Form'u normal haline getir
-            this.resetForm();
+            this.resetFormForEdit();
             
         } catch (error) {
             this.showNotification(error.message || 'Misafir güncellenirken hata oluştu!', 'error');
@@ -658,16 +658,18 @@ class VIPService {
         }
     }
 
-    // Form'u sıfırla
-    resetForm() {
+    // Edit mode için form'u sıfırla
+    resetFormForEdit() {
         const modal = document.getElementById('addGuestModal');
-        const title = modal.querySelector('h2');
-        const form = document.getElementById('addGuestForm');
-        const saveBtn = form.querySelector('.save-btn');
+        if (modal) {
+            const title = modal.querySelector('h2');
+            const form = document.getElementById('addGuestForm');
+            const saveBtn = form.querySelector('.save-btn');
 
-        title.textContent = 'Yeni Misafir Ekle';
-        saveBtn.textContent = 'Kaydet';
-        form.onsubmit = (e) => this.handleAddGuest(e);
+            if (title) title.textContent = 'Yeni Misafir Ekle';
+            if (saveBtn) saveBtn.textContent = 'Kaydet';
+            if (form) form.onsubmit = (e) => this.handleAddGuest(e);
+        }
     }
 
     // Bildirim gösterme

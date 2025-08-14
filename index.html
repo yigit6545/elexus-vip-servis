@@ -73,6 +73,69 @@
             </div>
         </main>
 
+        <!-- Add Guest Modal -->
+        <div id="addGuestModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2><i class="fas fa-user-plus"></i> Yeni Misafir Ekle</h2>
+                    <button type="button" class="close-btn" onclick="window.vipService.closeAddGuestModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <form id="addGuestForm" onsubmit="window.vipService.handleAddGuest(event)">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestName">Misafir Adı *</label>
+                            <input type="text" id="guestName" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="guestClass">VIP Sınıfı *</label>
+                            <select id="guestClass" required>
+                                <option value="">Seçiniz</option>
+                                <option value="VIP">VIP</option>
+                                <option value="A">A Grubu</option>
+                                <option value="B">B Grubu</option>
+                                <option value="C">C Grubu</option>
+                                <option value="D">D Grubu</option>
+                                <option value="Lokal">Lokal</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestAlcohol">İçtiği Alkoller</label>
+                            <input type="text" id="guestAlcohol" placeholder="Örn: Vodka, Şarap">
+                        </div>
+                        <div class="form-group">
+                            <label for="guestCigarette">İçtiği Sigaralar</label>
+                            <input type="text" id="guestCigarette" placeholder="Örn: Marlboro, Camel">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="guestCigar">İçtiği Purolar</label>
+                            <input type="text" id="guestCigar" placeholder="Örn: Havana, Montecristo">
+                        </div>
+                        <div class="form-group">
+                            <label for="guestPhoto">Fotoğraf</label>
+                            <input type="file" id="guestPhoto" accept="image/*">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestSpecialRequests">Özel İstekler</label>
+                        <textarea id="guestSpecialRequests" rows="3" placeholder="Özel istekler, notlar..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="guestOtherInfo">Diğer Bilgiler</label>
+                        <textarea id="guestOtherInfo" rows="2" placeholder="Ek bilgiler, tercihler..."></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="button" class="cancel-btn" onclick="window.vipService.closeAddGuestModal()">İptal</button>
+                        <button type="submit" class="submit-btn">Misafir Ekle</button>
+                    </div>
+                </form>
+            </div>
+        </div>
 
     </div>
 

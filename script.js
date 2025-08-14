@@ -342,11 +342,21 @@ class VIPService {
 
         try {
             const classFilter = selectedClasses.join(',');
+            console.log('🔍 Filtreleme yapılıyor:', classFilter);
+            
             const guests = await this.apiRequest(`/guests?class_filter=${encodeURIComponent(classFilter)}`);
-            this.filteredGuests = guests;
-            this.renderGuests();
-            this.toggleFilterPanel();
+            
+            if (guests && Array.isArray(guests)) {
+                this.filteredGuests = guests;
+                this.renderGuests();
+                this.toggleFilterPanel();
+                this.showNotification(`${guests.length} misafir bulundu`, 'success');
+            } else {
+                console.warn('❌ Geçersiz misafir verisi:', guests);
+                this.showNotification('Filtreleme sonucu geçersiz!', 'error');
+            }
         } catch (error) {
+            console.error('❌ Filtreleme hatası:', error);
             this.showNotification('Filtreleme yapılırken hata oluştu!', 'error');
         }
     }

@@ -86,11 +86,23 @@ class VIPService {
             const response = await fetch(url, config);
             
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || `HTTP ${response.status}`);
+                let errorMessage = `HTTP ${response.status}`;
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.error || errorMessage;
+                } catch (parseError) {
+                    // JSON parse hatası durumunda status code kullan
+                    console.warn('JSON parse hatası, status code kullanılıyor:', parseError);
+                }
+                throw new Error(errorMessage);
             }
 
-            return await response.json();
+            try {
+                return await response.json();
+            } catch (parseError) {
+                console.warn('Response JSON parse hatası:', parseError);
+                return null;
+            }
         } catch (error) {
             console.error('API isteği hatası:', error);
             throw error;
@@ -192,11 +204,16 @@ class VIPService {
                 this.showLoginModal();
             } else {
                 // Token geçerli, kullanıcı bilgilerini güncelle
-                const userData = await response.json();
-                this.currentUser = userData;
-                localStorage.setItem('user', JSON.stringify(userData));
-                this.updateUserInfo();
-                console.log('✅ Token arka planda doğrulandı');
+                try {
+                    const userData = await response.json();
+                    this.currentUser = userData;
+                    localStorage.setItem('user', JSON.stringify(userData));
+                    this.updateUserInfo();
+                    console.log('✅ Token arka planda doğrulandı');
+                } catch (parseError) {
+                    console.warn('Token doğrulama response JSON parse hatası:', parseError);
+                    // JSON parse hatası durumunda mevcut kullanıcı bilgilerini koru
+                }
             }
         } catch (error) {
             console.error('❌ Arka plan token doğrulama hatası:', error);

@@ -8,7 +8,9 @@
     "dev": "nodemon server.js",
     "init-db": "node init-database.js",
     "init-postgres": "node init-postgresql.js",
-    "add-users": "node add-users.js"
+    "add-users": "node add-users.js",
+    "fix-db": "node fix-database.js",
+    "update-guests": "node update-guests.js"
   },
   "keywords": [
     "casino",

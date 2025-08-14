@@ -40,7 +40,9 @@ async function initDatabase() {
                 cigarette VARCHAR(100),
                 cigar VARCHAR(100),
                 special_requests TEXT,
-                photo_url VARCHAR(255),
+                other_info TEXT,
+                photo_path VARCHAR(255),
+                created_by INTEGER REFERENCES users(id),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )

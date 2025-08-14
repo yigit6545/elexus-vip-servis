@@ -10,6 +10,9 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Render.com için port binding
+const HOST = '0.0.0.0';
+
 // Middleware
 app.use(cors());
 app.use(express.json());
@@ -418,8 +421,9 @@ app.use((req, res) => {
 });
 
 // Sunucuyu başlat
-app.listen(PORT, '0.0.0.0', () => {
+app.listen(PORT, HOST, () => {
     console.log(`🚀 Elexus VIP Servis API sunucusu ${PORT} portunda çalışıyor`);
+    console.log(`🌐 Host: ${HOST}`);
     console.log(`📋 Kullanım:`);
     console.log(`- npm run init-db: Veritabanını başlat`);
     console.log(`- npm start: Sunucuyu başlat`);

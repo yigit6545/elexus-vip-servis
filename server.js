@@ -258,33 +258,52 @@ app.put('/api/guests/:id', authenticateToken, upload.single('photo'), (req, res)
         return res.status(400).json({ error: 'Ad ve sınıf gerekli' });
     }
 
+    console.log('🔍 Misafir güncelleniyor:', { id, name, guestClass });
+
     let photoPath = null;
     if (req.file) {
         photoPath = `/uploads/${req.file.filename}`;
     }
 
-    const query = `
-        UPDATE guests 
-        SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
-            special_requests = $6, other_info = $7, updated_at = CURRENT_TIMESTAMP
-        ${photoPath ? ', photo_path = $8' : ''}
-        WHERE id = $9
-        RETURNING *
-    `;
+    let query, params;
+    
+    if (photoPath) {
+        // Fotoğraf ile güncelleme
+        query = `
+            UPDATE guests 
+            SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
+                special_requests = $6, other_info = $7, photo_path = $8, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $9
+            RETURNING *
+        `;
+        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', photoPath, id];
+    } else {
+        // Fotoğraf olmadan güncelleme
+        query = `
+            UPDATE guests 
+            SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
+                special_requests = $6, other_info = $7, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $8
+            RETURNING *
+        `;
+        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', id];
+    }
 
-    const params = photoPath ? 
-        [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', photoPath, id] :
-        [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', id];
+    console.log('🔍 SQL Query:', query);
+    console.log('🔍 Params:', params);
 
     pool.query(query, params, (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Misafir güncellenirken hata oluştu' });
+            console.error('❌ Misafir güncelleme hatası:', err);
+            return res.status(500).json({ error: 'Misafir güncellenirken hata oluştu: ' + err.message });
         }
 
         if (result.rows.length === 0) {
+            console.log('❌ Misafir bulunamadı:', id);
             return res.status(404).json({ error: 'Misafir bulunamadı' });
         }
 
+        console.log('✅ Misafir güncellendi:', result.rows[0]);
         res.json(result.rows[0]);
     });
 });

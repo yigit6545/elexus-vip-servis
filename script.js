@@ -373,6 +373,14 @@ class VIPService {
     // Misafir ekleme modal'ını kapatma
     closeAddGuestModal() {
         document.getElementById('addGuestModal').style.display = 'none';
+        
+        // Edit mode flag'ini temizle
+        const form = document.getElementById('addGuestForm');
+        if (form) {
+            delete form.dataset.editMode;
+            delete form.dataset.editGuestId;
+        }
+        
         this.resetForm();
     }
 
@@ -394,6 +402,17 @@ class VIPService {
         if (!name || !guestClass) {
             this.showNotification('Misafir adı ve sınıfı zorunludur!', 'warning');
             this.isSubmitting = false;
+            return;
+        }
+
+        // Edit mode kontrolü
+        const form = document.getElementById('addGuestForm');
+        const isEditMode = form && form.dataset.editMode === 'true';
+        const editGuestId = form && form.dataset.editGuestId;
+
+        if (isEditMode && editGuestId) {
+            console.log('🔍 Misafir güncelleniyor:', { guestId: editGuestId, name, guestClass });
+            await this.handleUpdateGuest(e, editGuestId);
             return;
         }
 
@@ -544,6 +563,8 @@ class VIPService {
         const guest = this.guests.find(g => g.id === guestId);
         if (!guest) return;
 
+        console.log('🔍 Misafir düzenleme modu:', { guestId, guestName: guest.name });
+
         // Form'u doldur
         document.getElementById('guestName').value = guest.name;
         document.getElementById('guestClass').value = guest.class;
@@ -553,16 +574,21 @@ class VIPService {
         document.getElementById('guestSpecialRequests').value = guest.special_requests || '';
         document.getElementById('guestOtherInfo').value = guest.other_info || '';
 
+        // Edit mode flag'i ekle
+        const form = document.getElementById('addGuestForm');
+        if (form) {
+            form.dataset.editMode = 'true';
+            form.dataset.editGuestId = guestId;
+        }
+
         // Modal'ı düzenleme modunda aç
         const modal = document.getElementById('addGuestModal');
         if (modal) {
             const title = modal.querySelector('h2');
-            const form = modal.querySelector('#addGuestForm');
             const saveBtn = modal.querySelector('.submit-btn');
 
             if (title) title.textContent = 'Misafir Düzenle';
             if (saveBtn) saveBtn.textContent = 'Güncelle';
-            if (form) form.onsubmit = (e) => this.handleUpdateGuest(e, guestId);
             
             modal.style.display = 'flex';
         }

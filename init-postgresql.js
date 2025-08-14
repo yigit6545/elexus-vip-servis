@@ -2,7 +2,7 @@ const { Pool } = require('pg');
 
 // PostgreSQL veritabanı bağlantısı
 const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || 'postgresql://elexus_vip_db_user:YKiblvBhmWSJMgAxvtxkDhZ5jXnJc9k1@dpg-d2ec7uvdiees73fn446g-a.oregon-postgres.render.com/elexus_vip_db',
+    connectionString: process.env.DATABASE_URL,
     ssl: {
         rejectUnauthorized: false
     }

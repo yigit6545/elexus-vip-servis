@@ -7,6 +7,8 @@ Bu proje, Elexus Casino'nun VIP servis departmanı için geliştirilmiş modern 
 ### 🔐 Güvenlik
 - Login sistemi ile güvenli erişim
 - Kullanıcı kimlik doğrulama
+- Environment variables ile güvenli konfigürasyon
+- Hassas bilgiler GitHub'da saklanmaz
 
 ### 👥 Misafir Yönetimi
 - Misafir bilgilerini görüntüleme
@@ -50,15 +52,21 @@ Bu proje, Elexus Casino'nun VIP servis departmanı için geliştirilmiş modern 
    ```bash
    npm install
    ```
-4. **Veritabanını başlatın:**
+4. **Environment variables oluşturun:**
    ```bash
-   npm run init-db
+   # .env dosyası oluşturun
+   DATABASE_URL=your_postgresql_connection_string
+   JWT_SECRET=your_jwt_secret_key
    ```
-5. **Sunucuyu başlatın:**
+5. **Veritabanını başlatın:**
+   ```bash
+   npm run init-postgres
+   ```
+6. **Sunucuyu başlatın:**
    ```bash
    npm start
    ```
-6. **Tarayıcınızda açın:** `http://localhost:3000`
+7. **Tarayıcınızda açın:** `http://localhost:3000`
 7. **Giriş yapın:**
    - **Admin:** kullanıcı adı: `admin`, şifre: `admin123`
    - **Staff:** kullanıcı adı: `staff`, şifre: `admin123`

@@ -11,6 +11,13 @@ yarn-error.log*
 .env.test.local
 .env.production.local
 
+# Security files
+*.key
+*.pem
+*.crt
+secrets/
+config/
+
 # Database files
 *.db
 *.sqlite

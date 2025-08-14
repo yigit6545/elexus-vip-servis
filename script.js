@@ -419,8 +419,14 @@ class VIPService {
 
     // Form'u sıfırla
     resetForm() {
-        document.getElementById('addGuestForm').reset();
-        document.getElementById('guestName').focus();
+        const form = document.getElementById('addGuestForm');
+        if (form) {
+            form.reset();
+            const nameInput = document.getElementById('guestName');
+            if (nameInput) {
+                nameInput.focus();
+            }
+        }
     }
 
 
@@ -601,15 +607,29 @@ class VIPService {
         const notes = prompt('Ziyaret notları:');
         if (notes === null) return; // İptal edildi
 
+        if (!notes.trim()) {
+            this.showNotification('Ziyaret notları boş olamaz!', 'warning');
+            return;
+        }
+
         try {
-            await this.apiRequest(`/guests/${guestId}/visits`, {
+            console.log('🔍 Ziyaret ekleniyor:', { guestId, notes });
+            
+            const response = await this.apiRequest(`/guests/${guestId}/visits`, {
                 method: 'POST',
-                body: JSON.stringify({ notes })
+                body: JSON.stringify({ notes: notes.trim() })
             });
 
-            this.showNotification('Ziyaret kaydı eklendi!', 'success');
+            if (response) {
+                this.showNotification('Ziyaret kaydı başarıyla eklendi!', 'success');
+                // Misafir listesini yenile
+                await this.loadGuests();
+            } else {
+                this.showNotification('Ziyaret eklenirken beklenmeyen hata!', 'error');
+            }
             
         } catch (error) {
+            console.error('❌ Ziyaret ekleme hatası:', error);
             this.showNotification(error.message || 'Ziyaret eklenirken hata oluştu!', 'error');
         }
     }

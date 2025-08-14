@@ -91,34 +91,86 @@ class GuestDetailManager {
 
     // Misafir detaylarını görüntüle
     displayGuestDetails() {
-        if (!this.currentGuest) return;
+        if (!this.currentGuest) {
+            console.error('❌ Misafir verisi yok!');
+            this.showError('Misafir bilgileri yüklenemedi!');
+            return;
+        }
 
-        // Temel bilgiler
-        document.getElementById('guestInitials').textContent = this.currentGuest.name.substring(0, 2).toUpperCase();
-        document.getElementById('guestName').textContent = this.currentGuest.name;
-        document.getElementById('guestClass').textContent = this.currentGuest.class;
-        document.getElementById('guestId').textContent = this.currentGuest.id;
+        try {
+            // Temel bilgiler
+            const initialsElement = document.getElementById('guestInitials');
+            const nameElement = document.getElementById('guestName');
+            const classElement = document.getElementById('guestClass');
+            const idElement = document.getElementById('guestId');
+
+            if (initialsElement && this.currentGuest.name) {
+                initialsElement.textContent = this.currentGuest.name.substring(0, 2).toUpperCase();
+            }
+            if (nameElement) {
+                nameElement.textContent = this.currentGuest.name || 'İsimsiz';
+            }
+            if (classElement) {
+                classElement.textContent = this.currentGuest.class || 'Sınıf belirtilmemiş';
+            }
+            if (idElement) {
+                idElement.textContent = this.currentGuest.id || 'ID yok';
+            }
 
         // İçecek tercihleri
-        document.getElementById('guestAlcohol').textContent = this.currentGuest.alcohol || 'Belirtilmemiş';
-        document.getElementById('guestCigarette').textContent = this.currentGuest.cigarette || 'Belirtilmemiş';
-        document.getElementById('guestCigar').textContent = this.currentGuest.cigar || 'Yok';
+        const alcoholElement = document.getElementById('guestAlcohol');
+        const cigaretteElement = document.getElementById('guestCigarette');
+        const cigarElement = document.getElementById('guestCigar');
+
+        if (alcoholElement) {
+            alcoholElement.textContent = this.currentGuest.alcohol || 'Belirtilmemiş';
+        }
+        if (cigaretteElement) {
+            cigaretteElement.textContent = this.currentGuest.cigarette || 'Belirtilmemiş';
+        }
+        if (cigarElement) {
+            cigarElement.textContent = this.currentGuest.cigar || 'Yok';
+        }
 
         // Özel istekler ve diğer bilgiler
-        document.getElementById('guestSpecialRequests').textContent = this.currentGuest.special_requests || 'Yok';
-        document.getElementById('guestOtherInfo').textContent = this.currentGuest.other_info || 'Yok';
+        const specialRequestsElement = document.getElementById('guestSpecialRequests');
+        const otherInfoElement = document.getElementById('guestOtherInfo');
+
+        if (specialRequestsElement) {
+            specialRequestsElement.textContent = this.currentGuest.special_requests || 'Yok';
+        }
+        if (otherInfoElement) {
+            otherInfoElement.textContent = this.currentGuest.other_info || 'Yok';
+        }
 
         // Tarih bilgileri
-        const createdAt = new Date(this.currentGuest.created_at).toLocaleDateString('tr-TR');
-        const updatedAt = this.currentGuest.updated_at ? 
-            new Date(this.currentGuest.updated_at).toLocaleDateString('tr-TR') : 'Güncellenmedi';
-        
-        document.getElementById('guestCreatedAt').textContent = createdAt;
-        document.getElementById('guestUpdatedAt').textContent = updatedAt;
-        document.getElementById('guestCreatedBy').textContent = 'Admin'; // Şimdilik sabit
+        const createdAtElement = document.getElementById('guestCreatedAt');
+        const updatedAtElement = document.getElementById('guestUpdatedAt');
+        const createdByElement = document.getElementById('guestCreatedBy');
+
+        if (createdAtElement && this.currentGuest.created_at) {
+            const createdAt = new Date(this.currentGuest.created_at).toLocaleDateString('tr-TR');
+            createdAtElement.textContent = createdAt;
+        }
+        if (updatedAtElement && this.currentGuest.updated_at) {
+            const updatedAt = new Date(this.currentGuest.updated_at).toLocaleDateString('tr-TR');
+            updatedAtElement.textContent = updatedAt;
+        } else if (updatedAtElement) {
+            updatedAtElement.textContent = 'Güncellenmedi';
+        }
+        if (createdByElement) {
+            createdByElement.textContent = 'Admin'; // Şimdilik sabit
+        }
 
         // Sayfa başlığını güncelle
-        document.title = `${this.currentGuest.name} - Elexus VIP Servis`;
+        if (this.currentGuest.name) {
+            document.title = `${this.currentGuest.name} - Elexus VIP Servis`;
+        }
+
+        } catch (error) {
+            console.error('❌ Misafir detayları görüntülenirken hata:', error);
+            this.showError('Misafir bilgileri görüntülenirken hata oluştu!');
+        }
     }
 
     // Ziyaretleri görüntüle

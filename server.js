@@ -17,6 +17,7 @@ const HOST = '0.0.0.0';
 app.use(cors());
 app.use(express.json());
 app.use(express.static(__dirname));
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // JWT secret key (production'da environment variable kullanın)
 const JWT_SECRET = process.env.JWT_SECRET || 'elexus-vip-service-secret-key-2024';

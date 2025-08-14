@@ -25,27 +25,49 @@ class VIPService {
     // Event listener'ları kurma
     setupEventListeners() {
         // Login form
-        document.getElementById('loginForm').addEventListener('submit', (e) => this.handleLogin(e));
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        }
         
         // Arama
-        document.getElementById('searchBtn').addEventListener('click', () => this.searchGuests());
-        document.getElementById('searchInput').addEventListener('input', (e) => this.handleSearchInput(e));
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => this.searchGuests());
+        }
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => this.handleSearchInput(e));
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.searchGuests();
+            });
+        }
         
         // Filtreleme
-        document.getElementById('filterBtn').addEventListener('click', () => this.toggleFilterPanel());
-        document.getElementById('applyFilter').addEventListener('click', () => this.applyFilters());
+        const filterBtn = document.getElementById('filterBtn');
+        const applyFilter = document.getElementById('applyFilter');
+        if (filterBtn) {
+            filterBtn.addEventListener('click', () => this.toggleFilterPanel());
+        }
+        if (applyFilter) {
+            applyFilter.addEventListener('click', () => this.applyFilters());
+        }
         
         // Misafir ekleme
-        document.getElementById('addGuestBtn').addEventListener('click', () => this.showAddGuestModal());
-        document.getElementById('addGuestForm').addEventListener('submit', (e) => this.handleAddGuest(e));
+        const addGuestBtn = document.getElementById('addGuestBtn');
+        const addGuestForm = document.getElementById('addGuestForm');
+        if (addGuestBtn) {
+            addGuestBtn.addEventListener('click', () => this.showAddGuestModal());
+        }
+        if (addGuestForm) {
+            addGuestForm.addEventListener('submit', (e) => this.handleAddGuest(e));
+        }
         
         // Çıkış
-        document.getElementById('logoutBtn').addEventListener('click', () => this.logout());
-        
-        // Enter tuşu ile arama
-        document.getElementById('searchInput').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') this.searchGuests();
-        });
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => this.logout());
+        }
     }
 
     // API istekleri için yardımcı fonksiyon

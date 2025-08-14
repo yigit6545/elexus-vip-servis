@@ -349,13 +349,23 @@ app.post('/api/guests/:id/visits', authenticateToken, (req, res) => {
     const { id } = req.params;
     const { notes } = req.body;
 
-    const query = 'INSERT INTO guest_visits (guest_id, notes, created_by) VALUES ($1, $2, $3) RETURNING *';
+    // User ID kontrolü
+    if (!req.user || !req.user.id) {
+        console.error('❌ User ID bulunamadı:', req.user);
+        return res.status(500).json({ error: 'Kullanıcı kimliği bulunamadı' });
+    }
+
+    console.log('🔍 Ziyaret ekleniyor:', { guestId: id, notes, createdBy: req.user.id });
+
+    const query = 'INSERT INTO guest_visits (guest_id, visit_date, notes, created_by) VALUES ($1, CURRENT_DATE, $2, $3) RETURNING *';
 
     pool.query(query, [id, notes || '', req.user.id], (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Ziyaret kaydı eklenirken hata oluştu' });
+            console.error('❌ Ziyaret ekleme hatası:', err);
+            return res.status(500).json({ error: 'Ziyaret kaydı eklenirken hata oluştu: ' + err.message });
         }
 
+        console.log('✅ Ziyaret eklendi:', result.rows[0]);
         res.status(201).json(result.rows[0]);
     });
 });
@@ -364,18 +374,23 @@ app.post('/api/guests/:id/visits', authenticateToken, (req, res) => {
 app.get('/api/guests/:id/visits', authenticateToken, (req, res) => {
     const { id } = req.params;
 
+    console.log('🔍 Ziyaretler isteniyor:', { guestId: id, user: req.user.username });
+
     const query = `
         SELECT gv.*, u.full_name as created_by_name
         FROM guest_visits gv
         LEFT JOIN users u ON gv.created_by = u.id
         WHERE gv.guest_id = $1
-        ORDER BY gv.visit_date DESC
+        ORDER BY gv.visit_date DESC, gv.created_at DESC
     `;
 
     pool.query(query, [id], (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Veritabanı hatası' });
+            console.error('❌ Ziyaretler getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası: ' + err.message });
         }
+        
+        console.log(`✅ ${result.rows.length} ziyaret bulundu`);
         res.json(result.rows);
     });
 });

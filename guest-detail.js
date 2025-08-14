@@ -225,9 +225,14 @@ class GuestDetailManager {
         e.preventDefault();
         
         const notes = document.getElementById('visitNotes').value.trim();
-        if (!notes) return;
+        if (!notes) {
+            this.showError('Ziyaret notları boş olamaz!');
+            return;
+        }
 
         try {
+            console.log('🔍 Ziyaret ekleniyor:', { guestId: this.currentGuest.id, notes });
+            
             const response = await fetch(`/api/guests/${this.currentGuest.id}/visits`, {
                 method: 'POST',
                 headers: {
@@ -237,14 +242,27 @@ class GuestDetailManager {
                 body: JSON.stringify({ notes })
             });
 
+            console.log('🔍 API yanıtı:', response.status, response.statusText);
+
             if (response.ok) {
+                const result = await response.json();
+                console.log('✅ Ziyaret eklendi:', result);
+                
                 this.closeAddVisitModal();
                 this.loadGuestVisits(this.currentGuest.id);
                 this.showNotification('Ziyaret başarıyla eklendi!', 'success');
             } else {
-                throw new Error('Ziyaret eklenirken hata oluştu');
+                let errorMessage = 'Ziyaret eklenirken hata oluştu';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.error || errorMessage;
+                } catch (parseError) {
+                    console.warn('❌ Error response JSON parse hatası:', parseError);
+                }
+                throw new Error(errorMessage);
             }
         } catch (error) {
+            console.error('❌ Ziyaret ekleme hatası:', error);
             this.showError(error.message);
         }
     }

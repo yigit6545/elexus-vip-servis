@@ -156,12 +156,14 @@ app.post('/api/login', (req, res) => {
 app.get('/api/guests', authenticateToken, (req, res) => {
     const { search, class_filter } = req.query;
     
+    console.log('🔍 Misafir listesi isteniyor:', { search, class_filter, user: req.user.username });
+    
     let query = 'SELECT * FROM guests';
     let params = [];
     let conditions = [];
 
     if (search) {
-        conditions.push(`(name LIKE $${params.length + 1} OR alcohol LIKE $${params.length + 2} OR cigarette LIKE $${params.length + 3} OR cigar LIKE $${params.length + 4} OR special_requests LIKE $${params.length + 5} OR other_info LIKE $${params.length + 6})`);
+        conditions.push(`(name ILIKE $${params.length + 1} OR alcohol ILIKE $${params.length + 2} OR cigarette ILIKE $${params.length + 3} OR cigar ILIKE $${params.length + 4} OR special_requests ILIKE $${params.length + 5} OR other_info ILIKE $${params.length + 6})`);
         const searchTerm = `%${search}%`;
         params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
     }
@@ -178,10 +180,16 @@ app.get('/api/guests', authenticateToken, (req, res) => {
 
     query += ' ORDER BY created_at DESC';
 
+    console.log('🔍 SQL Query:', query);
+    console.log('🔍 Params:', params);
+
     pool.query(query, params, (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Veritabanı hatası' });
+            console.error('❌ Misafir listesi hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası: ' + err.message });
         }
+        
+        console.log(`✅ ${result.rows.length} misafir bulundu`);
         res.json(result.rows);
     });
 });
@@ -194,7 +202,15 @@ app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) =>
         return res.status(400).json({ error: 'Ad ve sınıf gerekli' });
     }
 
+    // User ID kontrolü
+    if (!req.user || !req.user.id) {
+        console.error('❌ User ID bulunamadı:', req.user);
+        return res.status(500).json({ error: 'Kullanıcı kimliği bulunamadı' });
+    }
+
     const photoPath = req.file ? `/uploads/${req.file.filename}` : null;
+
+    console.log('🔍 Misafir ekleniyor:', { name, guestClass, createdBy: req.user.id });
 
     const query = `
         INSERT INTO guests (name, class, photo_path, alcohol, cigarette, cigar, special_requests, other_info, created_by)
@@ -207,12 +223,16 @@ app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) =>
         specialRequests || '', otherInfo || '', req.user.id
     ], (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Misafir eklenirken hata oluştu' });
+            console.error('❌ Misafir ekleme hatası:', err);
+            return res.status(500).json({ error: 'Misafir eklenirken hata oluştu: ' + err.message });
         }
+
+        console.log('✅ Misafir eklendi:', result.rows[0]);
 
         // Eklenen misafiri getir
         pool.query('SELECT * FROM guests WHERE id = $1', [result.rows[0].id], (err, guestResult) => {
             if (err) {
+                console.error('❌ Misafir bilgileri alınamadı:', err);
                 return res.status(500).json({ error: 'Misafir bilgileri alınamadı' });
             }
             res.status(201).json(guestResult.rows[0]);
@@ -264,6 +284,8 @@ app.put('/api/guests/:id', authenticateToken, upload.single('photo'), (req, res)
 app.get('/api/guests/:id', authenticateToken, (req, res) => {
     const { id } = req.params;
 
+    console.log('🔍 Misafir detayı isteniyor:', { id, user: req.user.username });
+
     const query = `
         SELECT g.*, u.full_name as created_by_name
         FROM guests g
@@ -273,13 +295,16 @@ app.get('/api/guests/:id', authenticateToken, (req, res) => {
 
     pool.query(query, [id], (err, result) => {
         if (err) {
-            return res.status(500).json({ error: 'Veritabanı hatası' });
+            console.error('❌ Misafir detayı hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası: ' + err.message });
         }
 
         if (result.rows.length === 0) {
+            console.log('❌ Misafir bulunamadı:', id);
             return res.status(404).json({ error: 'Misafir bulunamadı' });
         }
 
+        console.log('✅ Misafir detayı bulundu:', result.rows[0].name);
         res.json(result.rows[0]);
     });
 });

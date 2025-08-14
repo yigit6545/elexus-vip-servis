@@ -377,9 +377,19 @@ class VIPService {
     async handleAddGuest(e) {
         e.preventDefault();
         
+        const name = document.getElementById('guestName').value.trim();
+        const guestClass = document.getElementById('guestClass').value;
+        
+        if (!name || !guestClass) {
+            this.showNotification('Misafir adı ve sınıfı zorunludur!', 'warning');
+            return;
+        }
+
+        console.log('🔍 Misafir ekleniyor:', { name, guestClass });
+        
         const formData = new FormData();
-        formData.append('name', document.getElementById('guestName').value);
-        formData.append('class', document.getElementById('guestClass').value);
+        formData.append('name', name);
+        formData.append('class', guestClass);
         formData.append('alcohol', document.getElementById('guestAlcohol').value || '');
         formData.append('cigarette', document.getElementById('guestCigarette').value || '');
         formData.append('cigar', document.getElementById('guestCigar').value || '');
@@ -393,6 +403,8 @@ class VIPService {
         }
 
         try {
+            console.log('🔍 API isteği gönderiliyor...');
+            
             const response = await fetch(`${this.apiBaseUrl}/guests`, {
                 method: 'POST',
                 headers: {
@@ -401,10 +413,21 @@ class VIPService {
                 body: formData
             });
 
+            console.log('🔍 API yanıtı:', response.status, response.statusText);
+
             if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Misafir eklenirken hata oluştu');
+                let errorMessage = 'Misafir eklenirken hata oluştu';
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.error || errorMessage;
+                } catch (parseError) {
+                    console.warn('❌ Error response JSON parse hatası:', parseError);
+                }
+                throw new Error(errorMessage);
             }
+
+            const result = await response.json();
+            console.log('✅ Misafir eklendi:', result);
 
             // Misafir listesini yeniden yükle
             await this.loadGuests();
@@ -413,6 +436,7 @@ class VIPService {
             this.showNotification('Misafir başarıyla eklendi!', 'success');
             
         } catch (error) {
+            console.error('❌ Misafir ekleme hatası:', error);
             this.showNotification(error.message || 'Misafir eklenirken hata oluştu!', 'error');
         }
     }

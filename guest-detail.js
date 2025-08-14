@@ -38,7 +38,7 @@ class GuestDetailManager {
                 return;
             }
 
-            const response = await fetch(`http://localhost:3000/api/guests/${guestId}`, {
+            const response = await fetch(`/api/guests/${guestId}`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
@@ -71,7 +71,7 @@ class GuestDetailManager {
             const authToken = localStorage.getItem('authToken');
             if (!authToken) return;
 
-            const response = await fetch(`http://localhost:3000/api/guests/${guestId}/visits`, {
+            const response = await fetch(`/api/guests/${guestId}/visits`, {
                 headers: {
                     'Authorization': `Bearer ${authToken}`,
                     'Content-Type': 'application/json'
@@ -237,7 +237,7 @@ class GuestDetailManager {
         localStorage.setItem('returningFromDetail', 'true');
         
         // Ana sayfaya yönlendir
-        window.location.href = 'http://localhost:3000/';
+                    window.location.href = '/';
     }
 
     // Bildirim gösterme

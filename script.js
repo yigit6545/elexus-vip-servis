@@ -5,7 +5,7 @@ class VIPService {
         this.filteredGuests = [];
         this.currentUser = null;
         this.authToken = null;
-        this.apiBaseUrl = 'http://localhost:3000/api';
+        this.apiBaseUrl = '/api';
         this.init();
     }
 
@@ -155,7 +155,7 @@ class VIPService {
     // Arka planda token geçerliliğini kontrol et
     async validateTokenInBackground(token) {
         try {
-            const response = await fetch('http://localhost:3000/api/profile', {
+            const response = await fetch('/api/profile', {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                     'Content-Type': 'application/json'
@@ -544,7 +544,7 @@ class VIPService {
     // Misafir detay sayfasını aç
     openGuestDetail(guestId) {
         // Mevcut sekmede aç, yeni sekme açma
-        window.location.href = `http://localhost:3000/guest-detail.html?id=${guestId}`;
+                    window.location.href = `/guest-detail.html?id=${guestId}`;
     }
 
     // Ziyaret ekleme

@@ -68,8 +68,8 @@ Bu proje, Elexus Casino'nun VIP servis departmanı için geliştirilmiş modern 
    ```
 7. **Tarayıcınızda açın:** `http://localhost:3000`
 7. **Giriş yapın:**
-   - **Admin:** kullanıcı adı: `admin`, şifre: `admin123`
-   - **Staff:** kullanıcı adı: `staff`, şifre: `admin123`
+   - **Hüseyin:** kullanıcı adı: `hüseyin`, şifre: `20252025`
+   - **Yiğit:** kullanıcı adı: `yigit`, şifre: `20252025`
 
 ### Dosya Yapısı
 ```

@@ -60,24 +60,25 @@ async function initDatabase() {
         `);
         console.log('Guest visits tablosu oluşturuldu.');
         
-        // Admin kullanıcısı ekle (şifre: admin123)
+        // Hüseyin kullanıcısı ekle (şifre: 20252025)
         const bcrypt = require('bcryptjs');
-        const hashedPassword = await bcrypt.hash('admin123', 10);
+        const hashedPassword1 = await bcrypt.hash('20252025', 10);
         
         await client.query(`
             INSERT INTO users (username, password, full_name, role) 
             VALUES ($1, $2, $3, $4) 
             ON CONFLICT (username) DO NOTHING
-        `, ['admin', hashedPassword, 'Admin User', 'admin']);
-        console.log('Admin kullanıcısı eklendi (kullanıcı adı: admin, şifre: admin123)');
+        `, ['hüseyin', hashedPassword1, 'Hüseyin - VIP Servis', 'admin']);
+        console.log('Hüseyin kullanıcısı eklendi (kullanıcı adı: hüseyin, şifre: 20252025)');
         
-        // Staff kullanıcısı ekle (şifre: admin123)
+        // Yiğit kullanıcısı ekle (şifre: 20252025)
+        const hashedPassword2 = await bcrypt.hash('20252025', 10);
         await client.query(`
             INSERT INTO users (username, password, full_name, role) 
             VALUES ($1, $2, $3, $4) 
             ON CONFLICT (username) DO NOTHING
-        `, ['staff', hashedPassword, 'Staff User', 'staff']);
-        console.log('Staff kullanıcısı eklendi (kullanıcı adı: staff, şifre: admin123)');
+        `, ['yigit', hashedPassword2, 'Yiğit - VIP Servis', 'admin']);
+        console.log('Yiğit kullanıcısı eklendi (kullanıcı adı: yigit, şifre: 20252025)');
         
         // Örnek misafirler ekle
         const sampleGuests = [

@@ -343,9 +343,11 @@ class VIPService {
 
         try {
             const classFilter = selectedClasses.join(',');
+            const filterUrl = `/guests?class_filter=${encodeURIComponent(classFilter)}`;
             console.log('🔍 Filtreleme yapılıyor:', classFilter);
+            console.log('🔍 Filtreleme URL:', filterUrl);
             
-            const guests = await this.apiRequest(`/guests?class_filter=${encodeURIComponent(classFilter)}`);
+            const guests = await this.apiRequest(filterUrl);
             
             if (guests && Array.isArray(guests)) {
                 this.filteredGuests = guests;

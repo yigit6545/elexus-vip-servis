@@ -163,14 +163,23 @@ app.get('/api/guests', authenticateToken, (req, res) => {
     let conditions = [];
 
     if (search) {
-        conditions.push(`(name ILIKE $${params.length + 1} OR alcohol ILIKE $${params.length + 2} OR cigarette ILIKE $${params.length + 3} OR cigar ILIKE $${params.length + 4} OR special_requests ILIKE $${params.length + 5} OR other_info ILIKE $${params.length + 6})`);
+        const searchConditions = [
+            `name ILIKE $${params.length + 1}`,
+            `alcohol ILIKE $${params.length + 2}`,
+            `cigarette ILIKE $${params.length + 3}`,
+            `cigar ILIKE $${params.length + 4}`,
+            `special_requests ILIKE $${params.length + 5}`,
+            `other_info ILIKE $${params.length + 6}`
+        ];
+        conditions.push(`(${searchConditions.join(' OR ')})`);
         const searchTerm = `%${search}%`;
         params.push(searchTerm, searchTerm, searchTerm, searchTerm, searchTerm, searchTerm);
     }
 
     if (class_filter) {
         const classes = class_filter.split(',');
-        conditions.push(`class IN (${classes.map(() => '$').join(',')})`);
+        const placeholders = classes.map((_, index) => `$${params.length + index + 1}`).join(',');
+        conditions.push(`class IN (${placeholders})`);
         params.push(...classes);
     }
 

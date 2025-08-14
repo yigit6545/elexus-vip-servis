@@ -11,7 +11,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Render.com için port binding
-const HOST = '0.0.0.0';
+const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
 
 // Middleware
 app.use(cors());
@@ -447,8 +447,7 @@ app.get('/api/stats', authenticateToken, (req, res) => {
     });
 });
 
-// Uploads klasörü için statik dosya servisi
-app.use('/uploads', express.static('uploads'));
+// Uploads klasörü için statik dosya servisi (zaten yukarıda tanımlandı)
 
 // Hata yakalama middleware
 app.use((err, req, res, next) => {
@@ -465,8 +464,18 @@ app.use((req, res) => {
 app.listen(PORT, HOST, () => {
     console.log(`🚀 Elexus VIP Servis API sunucusu ${PORT} portunda çalışıyor`);
     console.log(`🌐 Host: ${HOST}`);
+    console.log(`🔗 URL: http://${HOST}:${PORT}`);
     console.log(`📋 Kullanım:`);
     console.log(`- npm run init-db: Veritabanını başlat`);
     console.log(`- npm start: Sunucuyu başlat`);
     console.log(`- npm run dev: Geliştirme modunda başlat`);
+    
+    // Veritabanı bağlantısını test et
+    pool.query('SELECT NOW()', (err, res) => {
+        if (err) {
+            console.error('❌ PostgreSQL veritabanına bağlanırken hata:', err.message);
+        } else {
+            console.log('✅ PostgreSQL veritabanına başarıyla bağlandı.');
+        }
+    });
 }); 

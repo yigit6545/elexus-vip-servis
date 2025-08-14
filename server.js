@@ -418,7 +418,7 @@ app.use((req, res) => {
 });
 
 // Sunucuyu başlat
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log(`🚀 Elexus VIP Servis API sunucusu ${PORT} portunda çalışıyor`);
     console.log(`📋 Kullanım:`);
     console.log(`- npm run init-db: Veritabanını başlat`);

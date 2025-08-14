@@ -6,6 +6,7 @@ class VIPService {
         this.currentUser = null;
         this.authToken = null;
         this.apiBaseUrl = '/api';
+        this.isSubmitting = false; // Duplicate submit önleme flag'i
         this.init();
     }
 
@@ -377,11 +378,20 @@ class VIPService {
     async handleAddGuest(e) {
         e.preventDefault();
         
+        // Duplicate submit'i önle
+        if (this.isSubmitting) {
+            console.log('⚠️ Form zaten gönderiliyor, duplicate önlendi');
+            return;
+        }
+        
+        this.isSubmitting = true;
+        
         const name = document.getElementById('guestName').value.trim();
         const guestClass = document.getElementById('guestClass').value;
         
         if (!name || !guestClass) {
             this.showNotification('Misafir adı ve sınıfı zorunludur!', 'warning');
+            this.isSubmitting = false;
             return;
         }
 
@@ -438,6 +448,9 @@ class VIPService {
         } catch (error) {
             console.error('❌ Misafir ekleme hatası:', error);
             this.showNotification(error.message || 'Misafir eklenirken hata oluştu!', 'error');
+        } finally {
+            // Submit flag'ini sıfırla
+            this.isSubmitting = false;
         }
     }
 

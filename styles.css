@@ -159,6 +159,8 @@ body {
     gap: 1rem;
     align-items: center;
     flex-wrap: wrap;
+    justify-content: flex-end;
+    flex: 1;
 }
 
 /* Arama kutusu */
@@ -214,6 +216,8 @@ body {
     color: #1e3c72;
     font-size: 0.9rem;
     padding: 0.5rem;
+    margin-left: auto;
+    margin-right: 1rem;
 }
 
 .user-role {
@@ -350,6 +354,7 @@ body {
     color: white;
     padding: 10px;
     border-radius: 50%;
+    margin-left: 0.5rem;
 }
 
 .logout-btn:hover {

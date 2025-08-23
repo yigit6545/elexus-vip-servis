@@ -1214,7 +1214,7 @@ class VIPService {
             }
 
             // JWT token kontrolü
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('authToken');
             if (!token) {
                 console.log('⚠️ JWT token bulunamadı, ana sayfaya yönlendiriliyor...');
                 window.location.href = 'index.html';
@@ -1306,7 +1306,7 @@ class VIPService {
             }
 
             // JWT token kontrolü
-            const token = localStorage.getItem('token');
+            const token = localStorage.getItem('authToken');
             if (!token) {
                 console.log('⚠️ JWT token bulunamadı, ana sayfaya yönlendiriliyor...');
                 window.location.href = 'index.html';

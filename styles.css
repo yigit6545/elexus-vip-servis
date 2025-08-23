@@ -464,23 +464,40 @@ body {
     gap: 0.75rem;
 }
 
-/* Guest card içerik grid layout */
+/* Guest card içerik layout - Misafirler sayfası gibi */
 .guest-card .guest-info {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: 0.5rem 1rem;
-    align-items: baseline;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
 }
 
-.guest-card .guest-info .label {
-    font-weight: 600;
+.guest-card .guest-info h3 {
+    text-align: center;
     color: #1e3c72;
-    min-width: 80px;
+    margin-bottom: 1rem;
+    font-size: 1.2rem;
 }
 
-.guest-card .guest-info .value {
+.guest-card .guest-info .detail-item {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.guest-card .guest-info .detail-item:last-child {
+    border-bottom: none;
+}
+
+.guest-card .guest-info .detail-label {
+    font-weight: 500;
+    color: #666;
+}
+
+.guest-card .guest-info .detail-value {
     color: #333;
-    text-align: left;
+    text-align: right;
+    max-width: 60%;
 }
 
 .guest-card:hover {

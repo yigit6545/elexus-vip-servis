@@ -565,6 +565,36 @@ app.get('/api/profile', authenticateToken, (req, res) => {
     });
 });
 
+// Kullanıcı rolünü admin yap (geçici endpoint)
+app.post('/api/admin/make-admin', (req, res) => {
+    const { username } = req.body;
+    
+    if (!username) {
+        return res.status(400).json({ error: 'Kullanıcı adı gerekli' });
+    }
+
+    console.log('🔍 Kullanıcı admin yapılıyor:', username);
+
+    pool.query('UPDATE users SET role = $1 WHERE username = $2 RETURNING *', 
+        ['admin', username], (err, result) => {
+        if (err) {
+            console.error('❌ Rol güncelleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası: ' + err.message });
+        }
+        
+        if (result.rows.length === 0) {
+            console.log('❌ Kullanıcı bulunamadı:', username);
+            return res.status(404).json({ error: 'Kullanıcı bulunamadı' });
+        }
+        
+        console.log('✅ Kullanıcı admin yapıldı:', username);
+        res.json({ 
+            message: `${username} başarıyla admin yapıldı`, 
+            user: result.rows[0] 
+        });
+    });
+});
+
 // İstatistikler
 app.get('/api/stats', authenticateToken, (req, res) => {
     const queries = {

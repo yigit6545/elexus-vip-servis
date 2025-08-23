@@ -947,6 +947,31 @@ class VIPService {
         }
     }
 
+    // Kullanıcıyı admin yap (geçici fonksiyon)
+    async makeUserAdmin(username) {
+        try {
+            const response = await fetch(`${this.apiUrl}/admin/make-admin`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username })
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                this.showNotification(result.message, 'success');
+                console.log('✅ Admin yapıldı:', result.user);
+            } else {
+                const error = await response.json();
+                this.showNotification(`Admin yapma hatası: ${error.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Admin yapma hatası:', error);
+            this.showNotification('Admin yapma sırasında bir hata oluştu', 'error');
+        }
+    }
+
     // Login modal'ını gizleme
     hideLoginModal() {
         document.getElementById('loginModal').style.display = 'none';

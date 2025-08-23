@@ -82,55 +82,15 @@ async function createTables() {
         `);
         console.log('✅ Events tablosu oluşturuldu.');
         
-        // Örnek veriler ekle
-        await addSampleData();
+        // Örnek veriler ekle (devre dışı)
+        // await addSampleData();
         
     } catch (error) {
         console.error('❌ Tablo oluşturma hatası:', error);
     }
 }
 
-// Örnek veriler ekle
-async function addSampleData() {
-    try {
-        console.log('📝 Örnek veriler ekleniyor...');
-        
-        // Doğum günleri
-        const birthdays = [
-            ['Ahmet Yılmaz', '2024-03-15', 'VIP', 'Özel müşteri, her yıl kutlama yapılıyor'],
-            ['Fatma Demir', '2024-06-22', 'A', 'Pasta ve mum tercih ediyor'],
-            ['Mehmet Kaya', '2024-09-08', 'B', 'Küçük kutlama yeterli']
-        ];
-        
-        for (const birthday of birthdays) {
-            await pool.query(`
-                INSERT INTO birthdays (guest_name, birth_date, vip_class, notes) 
-                VALUES ($1, $2, $3, $4)
-                ON CONFLICT DO NOTHING
-            `, birthday);
-        }
-        console.log('✅ 3 örnek doğum günü eklendi.');
-        
-        // Etkinlikler
-        const events = [
-            ['Yaz Konseri', 'concert', '2024-07-15', '21:00', 'Açık Hava Sahne', 'Büyük yaz konseri'],
-            ['VIP Parti', 'party', '2024-08-20', '22:00', 'Ana Salon', 'Özel VIP müşteri partisi'],
-            ['Show Gecesi', 'show', '2024-09-10', '20:00', 'Show Sahnesi', 'Dans ve müzik gösterisi']
-        ];
-        
-        for (const event of events) {
-            await pool.query(`
-                INSERT INTO events (event_name, event_type, event_date, event_time, location, description) 
-                VALUES ($1, $2, $3, $4, $5, $6)
-                ON CONFLICT DO NOTHING
-            `, event);
-        }
-        console.log('✅ 3 örnek etkinlik eklendi.');
-        
-    } catch (error) {
-        console.error('❌ Örnek veri ekleme hatası:', error);
-    }
-}
+
 
 // Fotoğraf yükleme konfigürasyonu
 const storage = multer.diskStorage({

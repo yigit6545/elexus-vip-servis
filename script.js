@@ -592,7 +592,10 @@ class VIPService {
                 <div class="guest-card-header">
                     <div class="guest-photo">
                         ${guest.photo_path ? 
-                            `<img src="${guest.photo_path}" alt="${guest.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
+                            `<img src="${guest.photo_path}" alt="${guest.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                             <button class="photo-delete-btn" onclick="event.stopPropagation(); window.vipService.deleteGuestPhoto(${guest.id})" title="Fotoğrafı Sil">
+                                 <i class="fas fa-trash"></i>
+                             </button>` : 
                             ''
                         }
                         <div class="guest-photo-placeholder" style="${guest.photo_path ? 'display: none;' : 'display: flex;'}">
@@ -632,7 +635,7 @@ class VIPService {
                         <span class="detail-value">${guest.other_info || 'Yok'}</span>
                     </div>
                     <div class="detail-item">
-                        <span class="detail-label">Marketing Bilgisi:</span>
+                        <span class="detail-label">Marketing:</span>
                         <span class="detail-value">${guest.marketing_info || 'Yok'}</span>
                     </div>
                 </div>
@@ -866,6 +869,34 @@ class VIPService {
         this.resetForm();
         
         this.showNotification('Başarıyla çıkış yapıldı', 'info');
+    }
+
+    // Misafir fotoğrafını silme
+    async deleteGuestPhoto(guestId) {
+        try {
+            const confirmed = confirm('Bu misafirin fotoğrafını silmek istediğinizden emin misiniz?');
+            if (!confirmed) return;
+
+            const response = await fetch(`${this.apiUrl}/guests/${guestId}/photo`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                // Misafir listesini güncelle
+                await this.loadGuests();
+                this.showNotification('Fotoğraf başarıyla silindi', 'success');
+            } else {
+                const error = await response.json();
+                this.showNotification(`Fotoğraf silinemedi: ${error.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Fotoğraf silme hatası:', error);
+            this.showNotification('Fotoğraf silinirken bir hata oluştu', 'error');
+        }
     }
 
     // Login modal'ını gizleme

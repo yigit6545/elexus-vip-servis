@@ -1329,10 +1329,10 @@ class VIPService {
                     ${birthday.photo_path ? 
                         `<img src="${birthday.photo_path}" alt="${birthday.guest_name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                          <div class="no-photo" style="display: none;">
-                             <i class="fas fa-user"></i>
+                             <span class="initials">${this.getInitials(birthday.guest_name)}</span>
                          </div>` :
                         `<div class="no-photo">
-                             <i class="fas fa-user"></i>
+                             <span class="initials">${this.getInitials(birthday.guest_name)}</span>
                          </div>`
                     }
                 </div>
@@ -1421,10 +1421,10 @@ class VIPService {
                     ${event.photo_path ? 
                         `<img src="${event.photo_path}" alt="${event.event_name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
                          <div class="no-photo" style="display: none;">
-                             <i class="fas fa-music"></i>
+                             <span class="initials">${this.getInitials(event.event_name)}</span>
                          </div>` :
                         `<div class="no-photo">
-                             <i class="fas fa-music"></i>
+                             <span class="initials">${this.getInitials(event.event_name)}</span>
                          </div>`
                     }
                 </div>
@@ -1482,6 +1482,16 @@ class VIPService {
             'other': 'Diğer'
         };
         return labels[type] || type;
+    }
+
+    // İsim baş harflerini al
+    getInitials(name) {
+        if (!name) return 'NA';
+        return name.split(' ')
+            .map(word => word.charAt(0))
+            .join('')
+            .toUpperCase()
+            .substring(0, 2);
     }
 
     // Modal işlemleri

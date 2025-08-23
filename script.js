@@ -1141,19 +1141,13 @@ class VIPService {
                 </div>
                 <div class="guest-info">
                     <h3>${birthday.guest_name}</h3>
-                    <div class="guest-details">
-                        <span class="detail-label">Doğum Günü:</span>
-                        <span class="detail-value">${new Date(birthday.birth_date).toLocaleDateString('tr-TR')}</span>
-                    </div>
-                    <div class="guest-details">
-                        <span class="detail-label">VIP Sınıfı:</span>
-                        <span class="detail-value">${birthday.vip_class || 'Belirtilmemiş'}</span>
-                    </div>
+                    <span class="label">Doğum Günü:</span>
+                    <span class="value">${new Date(birthday.birth_date).toLocaleDateString('tr-TR')}</span>
+                    <span class="label">VIP Sınıfı:</span>
+                    <span class="value">${birthday.vip_class || 'Belirtilmemiş'}</span>
                     ${birthday.notes ? `
-                        <div class="guest-details">
-                            <span class="detail-label">Notlar:</span>
-                            <span class="detail-value">${birthday.notes}</span>
-                        </div>
+                        <span class="label">Notlar:</span>
+                        <span class="value">${birthday.notes}</span>
                     ` : ''}
                 </div>
                 <div class="guest-actions">
@@ -1225,29 +1219,19 @@ class VIPService {
                 </div>
                 <div class="guest-info">
                     <h3>${event.event_name}</h3>
-                    <div class="guest-details">
-                        <span class="detail-label">Tür:</span>
-                        <span class="detail-value">${this.getEventTypeLabel(event.event_type)}</span>
-                    </div>
-                    <div class="guest-details">
-                        <span class="detail-label">Tarih:</span>
-                        <span class="detail-value">${new Date(event.event_date).toLocaleDateString('tr-TR')}</span>
-                    </div>
+                    <span class="label">Tür:</span>
+                    <span class="value">${this.getEventTypeLabel(event.event_type)}</span>
+                    <span class="label">Tarih:</span>
+                    <span class="value">${new Date(event.event_date).toLocaleDateString('tr-TR')}</span>
                     ${event.event_time ? `
-                        <div class="guest-details">
-                            <span class="detail-label">Saat:</span>
-                            <span class="detail-value">${event.event_time}</span>
-                        </div>
+                        <span class="label">Saat:</span>
+                        <span class="value">${event.event_time}</span>
                     ` : ''}
-                    <div class="guest-details">
-                        <span class="detail-label">Yer:</span>
-                        <span class="detail-value">${event.location}</span>
-                    </div>
+                    <span class="label">Yer:</span>
+                    <span class="value">${event.location}</span>
                     ${event.description ? `
-                        <div class="guest-details">
-                            <span class="detail-label">Açıklama:</span>
-                            <span class="detail-value">${event.description}</span>
-                        </div>
+                        <span class="label">Açıklama:</span>
+                        <span class="value">${event.description}</span>
                     ` : ''}
                 </div>
                 <div class="guest-actions">

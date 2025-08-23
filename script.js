@@ -1045,9 +1045,8 @@ class VIPService {
     }
 
     showGuestsPage() {
-        // Mevcut misafir sayfasını göster
-        document.getElementById('mainContent').style.display = 'block';
-        this.loadGuests();
+        // Ana sayfaya yönlendir
+        window.location.href = 'index.html';
     }
 
     showBirthdaysPage() {

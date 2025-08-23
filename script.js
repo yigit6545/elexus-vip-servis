@@ -1045,13 +1045,13 @@ class VIPService {
     }
 
     showBirthdaysPage() {
-        // Doğum günü sayfasını göster (henüz oluşturulmadı)
-        this.showNotification('Doğum günü sayfası yakında eklenecek!', 'info');
+        // Doğum günü sayfasına yönlendir
+        window.location.href = 'birthday.html';
     }
 
     showEventsPage() {
-        // Etkinlik sayfasını göster (henüz oluşturulmadı)
-        this.showNotification('Konser & Etkinlik sayfası yakında eklenecek!', 'info');
+        // Etkinlik sayfasına yönlendir
+        window.location.href = 'events.html';
     }
 
     // Login modal'ını gizleme
@@ -1072,6 +1072,203 @@ class VIPService {
     // Ana içeriği gizleme
     hideMainContent() {
         document.getElementById('mainContent').classList.add('hidden');
+    }
+
+    // Doğum günü sayfası fonksiyonları
+    async loadBirthdays() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/birthdays`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Doğum günleri yüklenemedi');
+            
+            const birthdays = await response.json();
+            this.renderBirthdays(birthdays);
+            this.updateBirthdayCount(birthdays.length);
+        } catch (error) {
+            console.error('Doğum günleri yükleme hatası:', error);
+            this.showNotification('Doğum günleri yüklenirken hata oluştu', 'error');
+        }
+    }
+
+    renderBirthdays(birthdays) {
+        const birthdayList = document.getElementById('birthdayList');
+        if (!birthdayList) return;
+
+        if (birthdays.length === 0) {
+            birthdayList.innerHTML = '<div class="no-data">Henüz doğum günü eklenmemiş</div>';
+            return;
+        }
+
+        birthdayList.innerHTML = birthdays.map(birthday => `
+            <div class="guest-card" onclick="window.vipService.editBirthday(${birthday.id})">
+                <div class="guest-photo">
+                    ${birthday.photo_path ? 
+                        `<img src="${birthday.photo_path}" alt="${birthday.guest_name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                         <div class="no-photo" style="display: none;">
+                             <i class="fas fa-user"></i>
+                         </div>` :
+                        `<div class="no-photo">
+                             <i class="fas fa-user"></i>
+                         </div>`
+                    }
+                </div>
+                <div class="guest-info">
+                    <h3>${birthday.guest_name}</h3>
+                    <div class="guest-details">
+                        <span class="detail-label">Doğum Günü:</span>
+                        <span class="detail-value">${new Date(birthday.birth_date).toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    <div class="guest-details">
+                        <span class="detail-label">VIP Sınıfı:</span>
+                        <span class="detail-value">${birthday.vip_class || 'Belirtilmemiş'}</span>
+                    </div>
+                    ${birthday.notes ? `
+                        <div class="guest-details">
+                            <span class="detail-label">Notlar:</span>
+                            <span class="detail-value">${birthday.notes}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="guest-actions">
+                    <button class="edit-btn" onclick="event.stopPropagation(); window.vipService.editBirthday(${birthday.id})" title="Düzenle">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" onclick="event.stopPropagation(); window.vipService.deleteBirthday(${birthday.id})" title="Sil">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    updateBirthdayCount(count) {
+        const countElement = document.getElementById('totalBirthdayCount');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    }
+
+    // Etkinlik sayfası fonksiyonları
+    async loadEvents() {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+            
+            if (!response.ok) throw new Error('Etkinlikler yüklenemedi');
+            
+            const events = await response.json();
+            this.renderEvents(events);
+            this.updateEventCount(events.length);
+        } catch (error) {
+            console.error('Etkinlikler yükleme hatası:', error);
+            this.showNotification('Etkinlikler yüklenirken hata oluştu', 'error');
+        }
+    }
+
+    renderEvents(events) {
+        const eventList = document.getElementById('eventList');
+        if (!eventList) return;
+
+        if (events.length === 0) {
+            eventList.innerHTML = '<div class="no-data">Henüz etkinlik eklenmemiş</div>';
+            return;
+        }
+
+        eventList.innerHTML = events.map(event => `
+            <div class="guest-card" onclick="window.vipService.editEvent(${event.id})">
+                <div class="guest-photo">
+                    ${event.photo_path ? 
+                        `<img src="${event.photo_path}" alt="${event.event_name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                         <div class="no-photo" style="display: none;">
+                             <i class="fas fa-music"></i>
+                         </div>` :
+                        `<div class="no-photo">
+                             <i class="fas fa-music"></i>
+                         </div>`
+                    }
+                </div>
+                <div class="guest-info">
+                    <h3>${event.event_name}</h3>
+                    <div class="guest-details">
+                        <span class="detail-label">Tür:</span>
+                        <span class="detail-value">${this.getEventTypeLabel(event.event_type)}</span>
+                    </div>
+                    <div class="guest-details">
+                        <span class="detail-label">Tarih:</span>
+                        <span class="detail-value">${new Date(event.event_date).toLocaleDateString('tr-TR')}</span>
+                    </div>
+                    ${event.event_time ? `
+                        <div class="guest-details">
+                            <span class="detail-label">Saat:</span>
+                            <span class="detail-value">${event.event_time}</span>
+                        </div>
+                    ` : ''}
+                    <div class="guest-details">
+                        <span class="detail-label">Yer:</span>
+                        <span class="detail-value">${event.location}</span>
+                    </div>
+                    ${event.description ? `
+                        <div class="guest-details">
+                            <span class="detail-label">Açıklama:</span>
+                            <span class="detail-value">${event.description}</span>
+                        </div>
+                    ` : ''}
+                </div>
+                <div class="guest-actions">
+                    <button class="edit-btn" onclick="event.stopPropagation(); window.vipService.editEvent(${event.id})" title="Düzenle">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-btn" onclick="event.stopPropagation(); window.vipService.deleteEvent(${event.id})" title="Sil">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    updateEventCount(count) {
+        const countElement = document.getElementById('totalEventCount');
+        if (countElement) {
+            countElement.textContent = count;
+        }
+    }
+
+    getEventTypeLabel(type) {
+        const labels = {
+            'concert': 'Konser',
+            'party': 'Parti',
+            'show': 'Show',
+            'other': 'Diğer'
+        };
+        return labels[type] || type;
+    }
+
+    // Modal işlemleri
+    showAddBirthdayModal() {
+        const modal = document.getElementById('addBirthdayModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    closeAddBirthdayModal() {
+        const modal = document.getElementById('addBirthdayModal');
+        if (modal) modal.style.display = 'none';
+    }
+
+    showAddEventModal() {
+        const modal = document.getElementById('addEventModal');
+        if (modal) modal.style.display = 'flex';
+    }
+
+    closeAddEventModal() {
+        const modal = document.getElementById('addEventModal');
+        if (modal) modal.style.display = 'none';
     }
 }
 

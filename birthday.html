@@ -127,5 +127,41 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Doğum günü sayfası yüklendiğinde
+        document.addEventListener('DOMContentLoaded', async () => {
+            // VIP Service'in yüklenmesini bekle
+            while (!window.vipService) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // Doğum günlerini yükle
+            await window.vipService.loadBirthdays();
+            
+            // Event listener'ları ekle
+            const addBirthdayBtn = document.getElementById('addBirthdayBtn');
+            const addBirthdayForm = document.getElementById('addBirthdayForm');
+            const filterBirthdayBtn = document.getElementById('filterBirthdayBtn');
+            const applyBirthdayFilter = document.getElementById('applyBirthdayFilter');
+            
+            if (addBirthdayBtn) {
+                addBirthdayBtn.addEventListener('click', () => window.vipService.showAddBirthdayModal());
+            }
+            
+            if (addBirthdayForm) {
+                addBirthdayForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // Form işleme kodu buraya eklenecek
+                });
+            }
+            
+            if (filterBirthdayBtn) {
+                filterBirthdayBtn.addEventListener('click', () => {
+                    const panel = document.getElementById('birthdayFilterPanel');
+                    panel.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

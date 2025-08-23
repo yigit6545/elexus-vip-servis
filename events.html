@@ -135,5 +135,41 @@
     </div>
 
     <script src="script.js"></script>
+    <script>
+        // Etkinlik sayfası yüklendiğinde
+        document.addEventListener('DOMContentLoaded', async () => {
+            // VIP Service'in yüklenmesini bekle
+            while (!window.vipService) {
+                await new Promise(resolve => setTimeout(resolve, 100));
+            }
+            
+            // Etkinlikleri yükle
+            await window.vipService.loadEvents();
+            
+            // Event listener'ları ekle
+            const addEventBtn = document.getElementById('addEventBtn');
+            const addEventForm = document.getElementById('addEventForm');
+            const filterEventBtn = document.getElementById('filterEventBtn');
+            const applyEventFilter = document.getElementById('applyEventFilter');
+            
+            if (addEventBtn) {
+                addEventBtn.addEventListener('click', () => window.vipService.showAddEventModal());
+            }
+            
+            if (addEventForm) {
+                addEventForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    // Form işleme kodu buraya eklenecek
+                });
+            }
+            
+            if (filterEventBtn) {
+                filterEventBtn.addEventListener('click', () => {
+                    const panel = document.getElementById('eventFilterPanel');
+                    panel.classList.toggle('hidden');
+                });
+            }
+        });
+    </script>
 </body>
 </html>

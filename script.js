@@ -720,7 +720,12 @@ class VIPService {
 
         if (isEditMode && editGuestId) {
             console.log('🔍 Misafir güncelleniyor:', { guestId: editGuestId, name, guestClass });
-            await this.handleUpdateGuest(e, editGuestId);
+            try {
+                await this.handleUpdateGuest(e, editGuestId);
+            } finally {
+                // Edit modunda erken dönüş öncesi submit flag'ini sıfırla
+                this.isSubmitting = false;
+            }
             return;
         }
 
@@ -1027,7 +1032,7 @@ class VIPService {
         if (modal) {
             const title = modal.querySelector('h2');
             const form = document.getElementById('addGuestForm');
-            const saveBtn = form.querySelector('.save-btn');
+            const saveBtn = form.querySelector('.submit-btn');
 
             if (title) title.textContent = 'Yeni Misafir Ekle';
             if (saveBtn) saveBtn.textContent = 'Kaydet';

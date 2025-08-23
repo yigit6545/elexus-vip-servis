@@ -101,11 +101,8 @@ body {
     background: white;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 1rem 0;
-    position: fixed;
+    position: sticky;
     top: 0;
-    left: 0;
-    right: 0;
-    width: 100%;
     z-index: 100;
 }
 
@@ -315,7 +312,6 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
-    padding-top: 7rem; /* Header için boşluk */
 }
 
 /* Misafir listesi */

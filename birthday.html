@@ -233,6 +233,26 @@
                     panel.classList.toggle('hidden');
                 });
             }
+            
+            // Düzenleme formu submit handler'ı
+            const editBirthdayForm = document.getElementById('editBirthdayForm');
+            if (editBirthdayForm) {
+                editBirthdayForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    console.log('🎂 Doğum günü düzenleme formu gönderiliyor...');
+                    
+                    try {
+                        const formData = new FormData(editBirthdayForm);
+                        const birthdayId = document.getElementById('editBirthdayId').value;
+                        
+                        await window.vipService.updateBirthday(birthdayId, formData);
+                        window.vipService.closeEditBirthdayModal();
+                        
+                    } catch (error) {
+                        console.error('Düzenleme hatası:', error);
+                    }
+                });
+            }
         });
     </script>
 </body>

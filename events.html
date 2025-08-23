@@ -249,6 +249,26 @@
                     panel.classList.toggle('hidden');
                 });
             }
+            
+            // Düzenleme formu submit handler'ı
+            const editEventForm = document.getElementById('editEventForm');
+            if (editEventForm) {
+                editEventForm.addEventListener('submit', async (e) => {
+                    e.preventDefault();
+                    console.log('🎵 Etkinlik düzenleme formu gönderiliyor...');
+                    
+                    try {
+                        const formData = new FormData(editEventForm);
+                        const eventId = document.getElementById('editEventId').value;
+                        
+                        await window.vipService.updateEvent(eventId, formData);
+                        window.vipService.closeEditEventModal();
+                        
+                    } catch (error) {
+                        console.error('Düzenleme hatası:', error);
+                    }
+                });
+            }
         });
     </script>
 </body>

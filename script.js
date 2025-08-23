@@ -8,26 +8,68 @@ class VIPService {
         this.apiBaseUrl = '/api';
         this.apiUrl = '/api'; // Admin fonksiyonları için
         this.isSubmitting = false; // Duplicate submit önleme flag'i
+        this.sessionId = null;
+        this.isAuthenticated = false;
+        
+        // Session kontrolü
+        this.checkSession();
         this.init();
+    }
+
+    // Session kontrolü
+    checkSession() {
+        const token = localStorage.getItem('authToken');
+        const sessionId = localStorage.getItem('sessionId');
+        
+        if (token && sessionId) {
+            this.authToken = token;
+            this.sessionId = sessionId;
+            this.isAuthenticated = true;
+            console.log('✅ Session bulundu, kullanıcı giriş yapmış');
+        } else {
+            console.log('⚠️ Session bulunamadı, login gerekli');
+            this.isAuthenticated = false;
+        }
+    }
+
+    // Sayfa içeriğini yükle
+    loadPageContent() {
+        const currentPage = this.getCurrentPage();
+        
+        switch (currentPage) {
+            case 'guests':
+                this.loadGuests();
+                break;
+            case 'birthdays':
+                this.loadBirthdays();
+                break;
+            case 'events':
+                this.loadEvents();
+                break;
+            default:
+                this.loadGuests();
+        }
+    }
+
+    // Mevcut sayfayı tespit et
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('birthday.html')) return 'birthdays';
+        if (path.includes('events.html')) return 'events';
+        return 'guests';
     }
 
     async init() {
         console.log('🚀 VIP Service başlatılıyor...');
         this.setupEventListeners();
         
-        // Sadece ana sayfada authentication kontrolü yap
-        if (document.getElementById('mainContent')) {
-            console.log('🏠 Ana sayfa tespit edildi, authentication kontrolü yapılıyor...');
-            const isAuthenticated = await this.checkAuthStatus();
-            if (!isAuthenticated) {
-                console.log('⚠️ Kullanıcı giriş yapmamış, login ekranı gösteriliyor');
-                this.showLoginModal();
-                return;
-            }
-            this.loadGuests();
-        } else {
-            console.log('📄 Diğer sayfa, authentication kontrolü atlanıyor...');
+        // Session kontrolü yap
+        if (this.isAuthenticated) {
+            console.log('✅ Session aktif, sayfa içeriği yükleniyor...');
             this.loadPageContent();
+        } else {
+            console.log('⚠️ Session bulunamadı, login ekranı gösteriliyor');
+            this.showLoginModal();
         }
     }
     
@@ -417,8 +459,11 @@ class VIPService {
     clearAuthData() {
         this.authToken = null;
         this.currentUser = null;
+        this.sessionId = null;
+        this.isAuthenticated = false;
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('sessionId');
         localStorage.removeItem('lastLoginTime');
     }
 
@@ -442,9 +487,14 @@ class VIPService {
             this.authToken = response.token;
             this.currentUser = response.user;
 
-            // Token ve kullanıcı bilgilerini localStorage'a kaydet
+            // Session ID oluştur
+            this.sessionId = 'session_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            this.isAuthenticated = true;
+
+            // Token, kullanıcı bilgileri ve session'ı localStorage'a kaydet
             localStorage.setItem('authToken', this.authToken);
             localStorage.setItem('user', JSON.stringify(this.currentUser));
+            localStorage.setItem('sessionId', this.sessionId);
             localStorage.setItem('lastLoginTime', new Date().getTime().toString());
 
             this.hideLoginModal();
@@ -1031,6 +1081,11 @@ class VIPService {
     logout() {
         this.guests = [];
         this.filteredGuests = [];
+        
+        // Session'ı temizle
+        this.isAuthenticated = false;
+        this.sessionId = null;
+        this.authToken = null;
         
         // Kimlik verilerini temizle
         this.clearAuthData();

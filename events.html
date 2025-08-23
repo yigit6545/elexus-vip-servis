@@ -138,13 +138,20 @@
     <script>
         // Etkinlik sayfası yüklendiğinde
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🎵 Etkinlik sayfası yükleniyor...');
+            
             // VIP Service'in yüklenmesini bekle
             while (!window.vipService) {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-            // Etkinlikleri yükle
-            await window.vipService.loadEvents();
+            // Sadece etkinlikleri yükle
+            try {
+                await window.vipService.loadEvents();
+                console.log('✅ Etkinlikler yüklendi');
+            } catch (error) {
+                console.error('❌ Etkinlikler yükleme hatası:', error);
+            }
             
             // Event listener'ları ekle
             const addEventBtn = document.getElementById('addEventBtn');

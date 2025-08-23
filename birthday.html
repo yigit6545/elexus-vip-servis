@@ -130,13 +130,20 @@
     <script>
         // Doğum günü sayfası yüklendiğinde
         document.addEventListener('DOMContentLoaded', async () => {
+            console.log('🎂 Doğum günü sayfası yükleniyor...');
+            
             // VIP Service'in yüklenmesini bekle
             while (!window.vipService) {
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-            // Doğum günlerini yükle
-            await window.vipService.loadBirthdays();
+            // Sadece doğum günlerini yükle
+            try {
+                await window.vipService.loadBirthdays();
+                console.log('✅ Doğum günleri yüklendi');
+            } catch (error) {
+                console.error('❌ Doğum günleri yükleme hatası:', error);
+            }
             
             // Event listener'ları ekle
             const addBirthdayBtn = document.getElementById('addBirthdayBtn');

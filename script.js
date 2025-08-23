@@ -28,6 +28,12 @@ class VIPService {
                 return;
             }
         }
+        
+        // Sadece ana sayfada misafirleri yükle
+        if (document.getElementById('mainContent')) {
+            console.log('🏠 Ana sayfa tespit edildi, misafirler yükleniyor...');
+            this.loadGuests();
+        }
     }
 
     // Event listener'ları kurma

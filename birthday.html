@@ -188,7 +188,15 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-            // Sadece doğum günlerini yükle
+            // Authentication kontrolü
+            const isAuthenticated = await window.vipService.checkAuthStatus();
+            if (!isAuthenticated) {
+                console.log('⚠️ Kullanıcı giriş yapmamış, login ekranına yönlendiriliyor');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Doğum günlerini yükle
             try {
                 await window.vipService.loadBirthdays();
                 console.log('✅ Doğum günleri yüklendi');

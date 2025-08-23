@@ -204,7 +204,15 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-            // Sadece etkinlikleri yükle
+            // Authentication kontrolü
+            const isAuthenticated = await window.vipService.checkAuthStatus();
+            if (!isAuthenticated) {
+                console.log('⚠️ Kullanıcı giriş yapmamış, login ekranına yönlendiriliyor');
+                window.location.href = 'index.html';
+                return;
+            }
+            
+            // Etkinlikleri yükle
             try {
                 await window.vipService.loadEvents();
                 console.log('✅ Etkinlikler yüklendi');

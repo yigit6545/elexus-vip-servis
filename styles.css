@@ -24,17 +24,22 @@ body {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     align-items: center;
     justify-content: center;
+    overflow-y: auto;
+    padding: 1rem;
 }
 
 .modal-content {
     background: white;
-    padding: 3rem;
+    padding: 2rem;
     border-radius: 20px;
     box-shadow: 0 30px 60px rgba(0, 0, 0, 0.4);
     width: 90%;
     max-width: 600px;
+    max-height: 90vh;
+    overflow-y: auto;
     text-align: center;
     animation: modalSlideIn 0.5s ease-out;
+    margin: auto;
 }
 
 .modal h2 {
@@ -1067,12 +1072,29 @@ body {
     
     /* Modal scroll düzeltmesi */
     .guest-detail-modal {
-        overflow: hidden;
+        overflow-y: auto;
+        padding: 0.5rem;
     }
     
     .guest-detail-modal .modal-content {
         overflow-y: auto;
         overflow-x: hidden;
+        max-height: 95vh;
+        margin: 2.5vh auto;
+    }
+    
+    .guest-detail-modal .modal-content::-webkit-scrollbar {
+        width: 6px;
+    }
+    
+    .guest-detail-modal .modal-content::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 3px;
+    }
+    
+    .guest-detail-modal .modal-content::-webkit-scrollbar-thumb {
+        background: #1e3c72;
+        border-radius: 3px;
     }
 }
 
@@ -1094,6 +1116,12 @@ body {
         width: 98%;
         margin: 1vh auto;
         max-height: 98vh;
+        overflow-y: auto;
+    }
+    
+    #addGuestModal .modal-content {
+        max-height: 90vh;
+        overflow-y: auto;
     }
     
     .guest-detail-body {
@@ -1122,6 +1150,31 @@ body {
 }
 
 /* Add Guest Modal Styles */
+#addGuestModal .modal-content {
+    max-height: 85vh;
+    overflow-y: auto;
+    text-align: left;
+    padding: 2rem;
+}
+
+#addGuestModal .modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#addGuestModal .modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#addGuestModal .modal-content::-webkit-scrollbar-thumb {
+    background: #1e3c72;
+    border-radius: 4px;
+}
+
+#addGuestModal .modal-content::-webkit-scrollbar-thumb:hover {
+    background: #2a5298;
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;

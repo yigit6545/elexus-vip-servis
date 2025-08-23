@@ -729,6 +729,29 @@ app.get('/api/birthdays', authenticateToken, (req, res) => {
     });
 });
 
+// Tek doğum günü getirme (düzenleme için)
+app.get('/api/birthdays/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    
+    const query = `
+        SELECT b.*, u.full_name as created_by_name 
+        FROM birthdays b 
+        LEFT JOIN users u ON b.created_by = u.id 
+        WHERE b.id = $1
+    `;
+    
+    pool.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Doğum günü getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Doğum günü bulunamadı' });
+        }
+        res.json(result.rows[0]);
+    });
+});
+
 app.post('/api/birthdays', authenticateToken, upload.single('photo'), (req, res) => {
     const { guest_name, birth_date, vip_class, notes } = req.body;
     const photo_path = req.file ? `/uploads/${req.file.filename}` : null;
@@ -808,6 +831,29 @@ app.get('/api/events', authenticateToken, (req, res) => {
             return res.status(500).json({ error: 'Veritabanı hatası' });
         }
         res.json(result.rows);
+    });
+});
+
+// Tek etkinlik getirme (düzenleme için)
+app.get('/api/events/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    
+    const query = `
+        SELECT e.*, u.full_name as created_by_name 
+        FROM events e 
+        LEFT JOIN users u ON e.created_by = u.id 
+        WHERE e.id = $1
+    `;
+    
+    pool.query(query, [id], (err, result) => {
+        if (err) {
+            console.error('Etkinlik getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Etkinlik bulunamadı' });
+        }
+        res.json(result.rows[0]);
     });
 });
 

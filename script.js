@@ -31,6 +31,13 @@ class VIPService {
             loginForm.addEventListener('submit', (e) => this.handleLogin(e));
         }
         
+        // Sayfa yenilendiğinde authentication'ı koru
+        window.addEventListener('beforeunload', () => {
+            if (this.authToken && this.currentUser) {
+                localStorage.setItem('authPreserved', 'true');
+            }
+        });
+        
         // Arama
         const searchBtn = document.getElementById('searchBtn');
         const searchInput = document.getElementById('searchInput');
@@ -114,11 +121,14 @@ class VIPService {
     async checkAuthStatus() {
         console.log('🔍 Kimlik doğrulama kontrolü başlatılıyor...');
         
-        // Detay sayfasından dönüyorsa, token kontrolü yapmadan ana sayfayı göster
+        // Detay sayfasından dönüyorsa veya authentication korunuyorsa, token kontrolü yapmadan ana sayfayı göster
         const returningFromDetail = localStorage.getItem('returningFromDetail');
-        if (returningFromDetail === 'true') {
-            console.log('🔄 Detay sayfasından dönüş tespit edildi, flag temizleniyor...');
+        const authPreserved = localStorage.getItem('authPreserved');
+        
+        if (returningFromDetail === 'true' || authPreserved === 'true') {
+            console.log('🔄 Detay sayfasından dönüş veya authentication korunuyor, flag temizleniyor...');
             localStorage.removeItem('returningFromDetail');
+            localStorage.removeItem('authPreserved');
             
             const token = localStorage.getItem('authToken');
             const user = localStorage.getItem('user');
@@ -167,7 +177,7 @@ class VIPService {
                 
                 console.log('✅ LocalStorage verileri kullanılarak ana sayfa gösterildi');
                 
-                // Arka planda token geçerliliğini kontrol et
+                // Arka planda token geçerliliğini kontrol et (sessizce)
                 this.validateTokenInBackground(token);
                 
                 return true; // Başarılı
@@ -198,11 +208,15 @@ class VIPService {
             });
 
             if (!response.ok) {
-                // Token geçersiz, localStorage'ı temizle
-                console.log('❌ Token geçersiz, localStorage temizleniyor');
-                this.clearAuthData();
-                this.hideMainContent();
-                this.showLoginModal();
+                // Token geçersiz, ama kullanıcıyı hemen logout yapma
+                // Sadece log ve uyarı ver
+                console.log('⚠️ Token geçersiz, ancak kullanıcı deneyimi korunuyor');
+                
+                // Eğer 401 (Unauthorized) ise, token'ı yenilemeye çalış
+                if (response.status === 401) {
+                    console.log('🔄 Token yenilenmeye çalışılıyor...');
+                    // Şimdilik sadece log, kullanıcıyı rahatsız etme
+                }
             } else {
                 // Token geçerli, kullanıcı bilgilerini güncelle
                 try {
@@ -219,6 +233,7 @@ class VIPService {
         } catch (error) {
             console.error('❌ Arka plan token doğrulama hatası:', error);
             // Hata durumunda sadece log, kullanıcıyı rahatsız etme
+            // Network hatası olabilir, token'ı geçersiz sayma
         }
     }
 

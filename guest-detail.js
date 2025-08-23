@@ -306,8 +306,11 @@ class GuestDetailManager {
         // localStorage'da bir flag koy ki ana sayfa login istemesin
         localStorage.setItem('returningFromDetail', 'true');
         
+        // Ek olarak, authentication durumunu da koru
+        localStorage.setItem('authPreserved', 'true');
+        
         // Ana sayfaya yönlendir
-                    window.location.href = '/';
+        window.location.href = '/';
     }
 
     // Bildirim gösterme

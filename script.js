@@ -35,18 +35,23 @@ class VIPService {
     // Sayfa içeriğini yükle
     loadPageContent() {
         const currentPage = this.getCurrentPage();
+        console.log('🔍 Mevcut sayfa:', currentPage);
         
         switch (currentPage) {
             case 'guests':
+                console.log('🏠 Ana sayfa içeriği yükleniyor...');
                 this.loadGuests();
                 break;
             case 'birthdays':
+                console.log('🎂 Doğum günü sayfası içeriği yükleniyor...');
                 this.loadBirthdays();
                 break;
             case 'events':
+                console.log('🎵 Etkinlik sayfası içeriği yükleniyor...');
                 this.loadEvents();
                 break;
             default:
+                console.log('🏠 Varsayılan: Ana sayfa içeriği yükleniyor...');
                 this.loadGuests();
         }
     }
@@ -54,13 +59,27 @@ class VIPService {
     // Mevcut sayfayı tespit et
     getCurrentPage() {
         const path = window.location.pathname;
-        if (path.includes('birthday.html')) return 'birthdays';
-        if (path.includes('events.html')) return 'events';
+        console.log('🔍 URL Path:', path);
+        
+        if (path.includes('birthday.html')) {
+            console.log('🎂 Doğum günü sayfası tespit edildi');
+            return 'birthdays';
+        }
+        if (path.includes('events.html')) {
+            console.log('🎵 Etkinlik sayfası tespit edildi');
+            return 'events';
+        }
+        
+        console.log('🏠 Ana sayfa tespit edildi');
         return 'guests';
     }
 
     async init() {
         console.log('🚀 VIP Service başlatılıyor...');
+        console.log('🔍 Session durumu:', this.isAuthenticated);
+        console.log('🔍 AuthToken:', this.authToken ? 'Var' : 'Yok');
+        console.log('🔍 SessionId:', this.sessionId ? 'Var' : 'Yok');
+        
         this.setupEventListeners();
         
         // Session kontrolü yap

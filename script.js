@@ -293,8 +293,45 @@ class VIPService {
             this.guests = guests;
             this.filteredGuests = [...guests];
             this.renderGuests();
+            this.updateGuestCount();
         } catch (error) {
             this.showNotification('Misafirler yüklenirken hata oluştu!', 'error');
+        }
+    }
+
+    // Misafir sayısını güncelle
+    updateGuestCount() {
+        const totalCountElement = document.getElementById('totalGuestCount');
+        if (totalCountElement) {
+            const totalCount = this.guests.length;
+            const filteredCount = this.filteredGuests.length;
+            
+            // Eğer filtreleme yapılmışsa, hem toplam hem de filtrelenmiş sayıyı göster
+            if (filteredCount !== totalCount) {
+                totalCountElement.textContent = `${filteredCount}/${totalCount}`;
+            } else {
+                totalCountElement.textContent = totalCount;
+            }
+            
+            // Misafir sayısına göre renk değişimi
+            const guestCountDiv = totalCountElement.closest('.guest-count');
+            if (guestCountDiv) {
+                const displayCount = filteredCount !== totalCount ? filteredCount : totalCount;
+                
+                if (displayCount === 0) {
+                    guestCountDiv.style.background = '#ffebee';
+                    guestCountDiv.style.color = '#c62828';
+                    guestCountDiv.style.borderColor = '#ffcdd2';
+                } else if (displayCount < 10) {
+                    guestCountDiv.style.background = '#fff3e0';
+                    guestCountDiv.style.color = '#ef6c00';
+                    guestCountDiv.style.borderColor = '#ffcc02';
+                } else {
+                    guestCountDiv.style.background = '#e3f2fd';
+                    guestCountDiv.style.color = '#2a5298';
+                    guestCountDiv.style.borderColor = '#bbdefb';
+                }
+            }
         }
     }
 
@@ -305,6 +342,7 @@ class VIPService {
         if (!searchTerm) {
             this.filteredGuests = [...this.guests];
             this.renderGuests();
+            this.updateGuestCount();
             return;
         }
 
@@ -312,6 +350,7 @@ class VIPService {
             const guests = await this.apiRequest(`/guests?search=${encodeURIComponent(searchTerm)}`);
             this.filteredGuests = guests;
             this.renderGuests();
+            this.updateGuestCount();
         } catch (error) {
             this.showNotification('Arama yapılırken hata oluştu!', 'error');
         }
@@ -322,6 +361,7 @@ class VIPService {
         if (e.target.value === '') {
             this.filteredGuests = [...this.guests];
             this.renderGuests();
+            this.updateGuestCount();
         }
     }
 
@@ -352,6 +392,7 @@ class VIPService {
             if (guests && Array.isArray(guests)) {
                 this.filteredGuests = guests;
                 this.renderGuests();
+                this.updateGuestCount();
                 this.toggleFilterPanel();
                 this.showNotification(`${guests.length} misafir bulundu`, 'success');
             } else {

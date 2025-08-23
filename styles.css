@@ -117,12 +117,36 @@ body {
     gap: 1rem;
 }
 
+.header-left {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
 .header h1 {
     color: #1e3c72;
     font-size: 2rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin: 0;
+}
+
+.guest-count {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #2a5298;
+    font-size: 1rem;
+    font-weight: 500;
+    background: #e3f2fd;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    border: 1px solid #bbdefb;
+}
+
+.guest-count i {
+    color: #1e3c72;
 }
 
 .header-controls {
@@ -913,6 +937,16 @@ body {
     .header-content {
         flex-direction: column;
         text-align: center;
+    }
+    
+    .header-left {
+        align-items: center;
+        margin-bottom: 1rem;
+    }
+    
+    .guest-count {
+        font-size: 0.9rem;
+        padding: 0.4rem 0.8rem;
     }
     
     .header-controls {

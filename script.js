@@ -271,42 +271,7 @@ class VIPService {
         }
     }
 
-    // Login işlemi
-    async login(username, password) {
-        try {
-            console.log('🔐 Login işlemi başlatılıyor...');
-            
-            const response = await fetch('/api/login', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({ username, password })
-            });
-            
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.error || 'Login başarısız');
-            }
-            
-            const data = await response.json();
-            
-            // Token ve user bilgilerini kaydet
-            this.authToken = data.token;
-            this.currentUser = data.user;
-            
-            localStorage.setItem('authToken', data.token);
-            localStorage.setItem('user', JSON.stringify(data.user));
-            localStorage.setItem('lastLoginTime', Date.now().toString());
-            
-            console.log('✅ Login başarılı:', data.user.username);
-            return data;
-            
-        } catch (error) {
-            console.error('❌ Login hatası:', error);
-            throw error;
-        }
-    }
+
     
     // Kimlik doğrulama durumunu kontrol et
     async checkAuthStatus() {

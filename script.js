@@ -15,25 +15,19 @@ class VIPService {
         console.log('🚀 VIP Service başlatılıyor...');
         this.setupEventListeners();
         
-        // Kimlik doğrulama kontrolü
+        // Kimlik doğrulama kontrolü - TÜM SAYFALARDA
         const isAuthenticated = await this.checkAuthStatus();
         console.log('🔐 Kimlik doğrulama sonucu:', isAuthenticated);
         
         if (!isAuthenticated) {
-            console.log('⚠️ Kullanıcı giriş yapmamış, login ekranı gösteriliyor');
-            
-            // Ana sayfada değilse authentication kontrolü yapma
-            if (!document.getElementById('mainContent')) {
-                console.log('Ana sayfa değil, authentication kontrolü atlanıyor');
-                return;
-            }
+            console.log('⚠️ Kullanıcı giriş yapmamış, login ekranına yönlendiriliyor');
+            // Tüm sayfalarda login ekranına yönlendir
+            window.location.href = 'index.html';
+            return;
         }
         
-        // Sadece ana sayfada misafirleri yükle
-        if (document.getElementById('mainContent')) {
-            console.log('🏠 Ana sayfa tespit edildi, misafirler yükleniyor...');
-            this.loadGuests();
-        }
+        // Sayfa türüne göre içerik yükle
+        this.loadPageContent();
     }
 
     // Event listener'ları kurma
@@ -120,8 +114,122 @@ class VIPService {
             this.closeMainMenu();
         });
     }
+    
+    // Sayfa türüne göre içerik yükleme
+    loadPageContent() {
+        const currentPage = this.getCurrentPage();
+        console.log('📄 Mevcut sayfa:', currentPage);
+        
+        switch (currentPage) {
+            case 'index':
+                console.log('🏠 Ana sayfa içeriği yükleniyor...');
+                this.loadGuests();
+                break;
+            case 'birthday':
+                console.log('🎂 Doğum günleri sayfası içeriği yükleniyor...');
+                this.loadBirthdays();
+                break;
+            case 'events':
+                console.log('🎵 Etkinlikler sayfası içeriği yükleniyor...');
+                this.loadEvents();
+                break;
+            default:
+                console.log('❓ Bilinmeyen sayfa:', currentPage);
+        }
+    }
+    
+    // Mevcut sayfayı tespit et
+    getCurrentPage() {
+        const path = window.location.pathname;
+        if (path.includes('birthday.html')) return 'birthday';
+        if (path.includes('events.html')) return 'events';
+        return 'index';
+    }
+    
+    // Event listener'ları kurma
+    setupEventListeners() {
+        // Login form
+        const loginForm = document.getElementById('loginForm');
+        if (loginForm) {
+            loginForm.addEventListener('submit', (e) => this.handleLogin(e));
+        }
+        
+        // Sayfa yenilendiğinde authentication'ı koru
+        window.addEventListener('beforeunload', () => {
+            if (this.authToken && this.currentUser) {
+                localStorage.setItem('authPreserved', 'true');
+            }
+        });
+        
+        // Arama
+        const searchBtn = document.getElementById('searchBtn');
+        const searchInput = document.getElementById('searchInput');
+        if (searchBtn) {
+            searchBtn.addEventListener('click', () => this.searchGuests());
+        }
+        if (searchInput) {
+            searchInput.addEventListener('input', (e) => this.handleSearchInput(e));
+            searchInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') this.searchGuests();
+            });
+        }
+        
+        // Filtreleme
+        const filterBtn = document.getElementById('filterBtn');
+        const applyFilter = document.getElementById('applyFilter');
+        if (filterBtn) {
+            filterBtn.addEventListener('click', () => this.toggleFilterPanel());
+        }
+        if (applyFilter) {
+            applyFilter.addEventListener('click', () => this.applyFilters());
+        }
+        
+        // Misafir ekleme
+        const addGuestBtn = document.getElementById('addGuestBtn');
+        const addGuestForm = document.getElementById('addGuestForm');
+        if (addGuestBtn) {
+            addGuestBtn.addEventListener('click', () => this.showAddGuestModal());
+        }
+        if (addGuestForm) {
+            addGuestForm.addEventListener('click', (e) => this.handleAddGuest(e));
+        }
+        
+        // Çıkış
+        const logoutBtn = document.getElementById('logoutBtn');
+        if (logoutBtn) {
+            logoutBtn.addEventListener('click', () => this.logout());
+        }
 
-    // API istekleri için yardımcı fonksiyon
+        // Fotoğraf temizleme (admin)
+        const cleanupPhotosBtn = document.getElementById('cleanupPhotosBtn');
+        if (cleanupPhotosBtn) {
+            cleanupPhotosBtn.addEventListener('click', () => this.cleanupAllPhotos());
+        }
+
+        // Ana menü dropdown
+        const mainMenuBtn = document.getElementById('mainMenuBtn');
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        if (mainMenuBtn) {
+            mainMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMainMenu();
+            });
+        }
+
+        // Menü item'larına tıklama
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleMenuNavigation(item.dataset.page);
+            });
+        });
+
+        // Sayfa dışına tıklandığında menüyü kapat
+        document.addEventListener('click', () => {
+            this.closeMainMenu();
+        });
+    }
     async apiRequest(endpoint, options = {}) {
         const url = `${this.apiBaseUrl}${endpoint}`;
         const config = {

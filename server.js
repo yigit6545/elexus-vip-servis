@@ -619,6 +619,158 @@ app.get('/api/fix-yigit-admin', (req, res) => {
     });
 });
 
+// Doğum günleri API'leri
+app.get('/api/birthdays', authenticateToken, (req, res) => {
+    const query = `
+        SELECT b.*, u.full_name as created_by_name 
+        FROM birthdays b 
+        LEFT JOIN users u ON b.created_by = u.id 
+        ORDER BY b.birth_date ASC
+    `;
+    
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.error('Doğum günleri getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        res.json(result.rows);
+    });
+});
+
+app.post('/api/birthdays', authenticateToken, upload.single('photo'), (req, res) => {
+    const { guest_name, birth_date, vip_class, notes } = req.body;
+    const photo_path = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    const query = `
+        INSERT INTO birthdays (guest_name, birth_date, vip_class, photo_path, notes, created_by) 
+        VALUES ($1, $2, $3, $4, $5, $6) 
+        RETURNING *
+    `;
+    
+    pool.query(query, [guest_name, birth_date, vip_class, photo_path, notes, req.user.id], (err, result) => {
+        if (err) {
+            console.error('Doğum günü ekleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        res.status(201).json(result.rows[0]);
+    });
+});
+
+app.put('/api/birthdays/:id', authenticateToken, upload.single('photo'), (req, res) => {
+    const { id } = req.params;
+    const { guest_name, birth_date, vip_class, notes } = req.body;
+    const photo_path = req.file ? `/uploads/${req.file.filename}` : req.body.photo_path;
+    
+    const query = `
+        UPDATE birthdays 
+        SET guest_name = $1, birth_date = $2, vip_class = $3, photo_path = $4, notes = $5, updated_at = CURRENT_TIMESTAMP 
+        WHERE id = $6 
+        RETURNING *
+    `;
+    
+    pool.query(query, [guest_name, birth_date, vip_class, photo_path, notes, id], (err, result) => {
+        if (err) {
+            console.error('Doğum günü güncelleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Doğum günü bulunamadı' });
+        }
+        res.json(result.rows[0]);
+    });
+});
+
+app.delete('/api/birthdays/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    
+    pool.query('DELETE FROM birthdays WHERE id = $1 RETURNING *', [id], (err, result) => {
+        if (err) {
+            console.error('Doğum günü silme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Doğum günü bulunamadı' });
+        }
+        res.json({ message: 'Doğum günü başarıyla silindi' });
+    });
+});
+
+// Etkinlikler API'leri
+app.get('/api/events', authenticateToken, (req, res) => {
+    const query = `
+        SELECT e.*, u.full_name as created_by_name 
+        FROM events e 
+        LEFT JOIN users u ON e.created_by = u.id 
+        ORDER BY e.event_date ASC, e.event_time ASC
+    `;
+    
+    pool.query(query, (err, result) => {
+        if (err) {
+            console.error('Etkinlikler getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        res.json(result.rows);
+    });
+});
+
+app.post('/api/events', authenticateToken, upload.single('photo'), (req, res) => {
+    const { event_name, event_type, event_date, event_time, location, description } = req.body;
+    const photo_path = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    const query = `
+        INSERT INTO events (event_name, event_type, event_date, event_time, location, photo_path, description, created_by) 
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+        RETURNING *
+    `;
+    
+    pool.query(query, [event_name, event_type, event_date, event_time, location, photo_path, description, req.user.id], (err, result) => {
+        if (err) {
+            console.error('Etkinlik ekleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        res.status(201).json(result.rows[0]);
+    });
+});
+
+app.put('/api/events/:id', authenticateToken, upload.single('photo'), (req, res) => {
+    const { id } = req.params;
+    const { event_name, event_type, event_date, event_time, location, description } = req.body;
+    const photo_path = req.file ? `/uploads/${req.file.filename}` : req.body.photo_path;
+    
+    const query = `
+        UPDATE events 
+        SET event_name = $1, event_type = $2, event_date = $3, event_time = $4, location = $5, photo_path = $6, description = $7, updated_at = CURRENT_TIMESTAMP 
+        WHERE id = $8 
+        RETURNING *
+    `;
+    
+    pool.query(query, [event_name, event_type, event_date, event_time, location, photo_path, description, id], (err, result) => {
+        if (err) {
+            console.error('Etkinlik güncelleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Etkinlik bulunamadı' });
+        }
+        res.json(result.rows[0]);
+    });
+});
+
+app.delete('/api/events/:id', authenticateToken, (req, res) => {
+    const { id } = req.params;
+    
+    pool.query('DELETE FROM events WHERE id = $1 RETURNING *', [id], (err, result) => {
+        if (err) {
+            console.error('Etkinlik silme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+        if (result.rows.length === 0) {
+            return res.status(404).json({ error: 'Etkinlik bulunamadı' });
+        }
+        res.json({ message: 'Etkinlik başarıyla silindi' });
+    });
+});
+
 // İstatistikler
 app.get('/api/stats', authenticateToken, (req, res) => {
     const queries = {

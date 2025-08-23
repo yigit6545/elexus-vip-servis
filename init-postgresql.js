@@ -62,6 +62,40 @@ async function initDatabase() {
         `);
         console.log('Guest visits tablosu oluşturuldu.');
         
+        // Doğum günleri tablosu
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS birthdays (
+                id SERIAL PRIMARY KEY,
+                guest_name VARCHAR(100) NOT NULL,
+                birth_date DATE NOT NULL,
+                vip_class VARCHAR(20) DEFAULT 'Lokal',
+                photo_path VARCHAR(255),
+                notes TEXT,
+                created_by INTEGER REFERENCES users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('Birthdays tablosu oluşturuldu.');
+        
+        // Etkinlikler tablosu
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS events (
+                id SERIAL PRIMARY KEY,
+                event_name VARCHAR(100) NOT NULL,
+                event_type VARCHAR(50) NOT NULL,
+                event_date DATE NOT NULL,
+                event_time TIME,
+                location VARCHAR(255) NOT NULL,
+                photo_path VARCHAR(255),
+                description TEXT,
+                created_by INTEGER REFERENCES users(id),
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            )
+        `);
+        console.log('Events tablosu oluşturuldu.');
+        
         // Hüseyin kullanıcısı ekle (şifre: 20252025)
         const bcrypt = require('bcryptjs');
         const hashedPassword1 = await bcrypt.hash('20252025', 10);
@@ -98,6 +132,36 @@ async function initDatabase() {
             `, guest);
         }
         console.log('5 örnek misafir eklendi.');
+        
+        // Örnek doğum günleri ekle
+        const sampleBirthdays = [
+            ['Ahmet Yılmaz', '2024-03-15', 'VIP', 'Özel müşteri, her yıl kutlama yapılıyor'],
+            ['Fatma Demir', '2024-06-22', 'A', 'Pasta ve mum tercih ediyor'],
+            ['Mehmet Kaya', '2024-09-08', 'B', 'Küçük kutlama yeterli']
+        ];
+        
+        for (const birthday of sampleBirthdays) {
+            await client.query(`
+                INSERT INTO birthdays (guest_name, birth_date, vip_class, notes) 
+                VALUES ($1, $2, $3, $4)
+            `, birthday);
+        }
+        console.log('3 örnek doğum günü eklendi.');
+        
+        // Örnek etkinlikler ekle
+        const sampleEvents = [
+            ['Yaz Konseri', 'concert', '2024-07-15', '21:00', 'Açık Hava Sahne', 'Büyük yaz konseri'],
+            ['VIP Parti', 'party', '2024-08-20', '22:00', 'Ana Salon', 'Özel VIP müşteri partisi'],
+            ['Show Gecesi', 'show', '2024-09-10', '20:00', 'Show Sahnesi', 'Dans ve müzik gösterisi']
+        ];
+        
+        for (const event of sampleEvents) {
+            await client.query(`
+                INSERT INTO events (event_name, event_type, event_date, event_time, location, description) 
+                VALUES ($1, $2, $3, $4, $5, $6)
+            `, event);
+        }
+        console.log('3 örnek etkinlik eklendi.');
         
         client.release();
         console.log('Veritabanı tabloları oluşturuldu ve örnek veriler eklendi.');

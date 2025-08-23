@@ -1213,9 +1213,17 @@ class VIPService {
                 return;
             }
 
+            // JWT token kontrolü
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('⚠️ JWT token bulunamadı, doğum günleri yüklenemiyor');
+                this.showNotification('Giriş yapmanız gerekiyor!', 'error');
+                return;
+            }
+
             const response = await fetch(`${this.apiBaseUrl}/birthdays`, {
                 headers: {
-                    'Authorization': `Bearer ${this.authToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
             
@@ -1297,9 +1305,17 @@ class VIPService {
                 return;
             }
 
+            // JWT token kontrolü
+            const token = localStorage.getItem('token');
+            if (!token) {
+                console.log('⚠️ JWT token bulunamadı, etkinlikler yüklenemiyor');
+                this.showNotification('Giriş yapmanız gerekiyor!', 'error');
+                return;
+            }
+
             const response = await fetch(`${this.apiBaseUrl}/events`, {
                 headers: {
-                    'Authorization': `Bearer ${this.authToken}`
+                    'Authorization': `Bearer ${token}`
                 }
             });
             
@@ -1310,7 +1326,7 @@ class VIPService {
             this.updateEventCount(events.length);
         } catch (error) {
             console.error('Etkinlikler yükleme hatası:', error);
-            this.showNotification('Etkinlikler yüklenirken hata oluştu', 'error');
+            this.showNotification('Etkinlikler yüklenemiyor', 'error');
         }
     }
 

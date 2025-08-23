@@ -40,6 +40,8 @@ class VIPService {
         switch (currentPage) {
             case 'guests':
                 console.log('🏠 Ana sayfa içeriği yükleniyor...');
+                this.hideLoginModal(); // Login modal'ı gizle
+                this.showMainContent(); // Ana içeriği göster
                 this.loadGuests();
                 break;
             case 'birthdays':
@@ -52,6 +54,8 @@ class VIPService {
                 break;
             default:
                 console.log('🏠 Varsayılan: Ana sayfa içeriği yükleniyor...');
+                this.hideLoginModal(); // Login modal'ı gizle
+                this.showMainContent(); // Ana içeriği göster
                 this.loadGuests();
         }
     }
@@ -1267,9 +1271,16 @@ class VIPService {
 
     // Ana içeriği gösterme
     showMainContent() {
+        console.log('🔍 showMainContent çağrıldı');
         const mainContent = document.getElementById('mainContent');
+        console.log('🔍 mainContent elementi:', mainContent ? 'Bulundu' : 'Bulunamadı');
+        
         if (mainContent) {
+            console.log('✅ Ana içerik gösteriliyor...');
             mainContent.classList.remove('hidden');
+            console.log('✅ Ana içerik görünür yapıldı');
+        } else {
+            console.log('❌ mainContent elementi bulunamadı!');
         }
     }
 

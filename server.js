@@ -733,6 +733,12 @@ app.post('/api/birthdays', authenticateToken, upload.single('photo'), (req, res)
     const { guest_name, birth_date, vip_class, notes } = req.body;
     const photo_path = req.file ? `/uploads/${req.file.filename}` : null;
     
+    // req.user kontrolü ekle
+    if (!req.user || !req.user.id) {
+        console.error('JWT token hatası: req.user bulunamadı');
+        return res.status(401).json({ error: 'Geçersiz token' });
+    }
+    
     const query = `
         INSERT INTO birthdays (guest_name, birth_date, vip_class, photo_path, notes, created_by) 
         VALUES ($1, $2, $3, $4, $5, $6) 
@@ -808,6 +814,12 @@ app.get('/api/events', authenticateToken, (req, res) => {
 app.post('/api/events', authenticateToken, upload.single('photo'), (req, res) => {
     const { event_name, event_type, event_date, event_time, location, description } = req.body;
     const photo_path = req.file ? `/uploads/${req.file.filename}` : null;
+    
+    // req.user kontrolü ekle
+    if (!req.user || !req.user.id) {
+        console.error('JWT token hatası: req.user bulunamadı');
+        return res.status(401).json({ error: 'Geçersiz token' });
+    }
     
     const query = `
         INSERT INTO events (event_name, event_type, event_date, event_time, location, photo_path, description, created_by) 

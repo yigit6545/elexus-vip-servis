@@ -595,6 +595,30 @@ app.post('/api/admin/make-admin', (req, res) => {
     });
 });
 
+// Direkt Yigit'i admin yap (geçici endpoint)
+app.get('/api/fix-yigit-admin', (req, res) => {
+    console.log('🔧 Yigit admin yapılıyor...');
+
+    pool.query('UPDATE users SET role = $1 WHERE username = $2 RETURNING *', 
+        ['admin', 'yigit'], (err, result) => {
+        if (err) {
+            console.error('❌ Rol güncelleme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası: ' + err.message });
+        }
+        
+        if (result.rows.length === 0) {
+            console.log('❌ Yigit kullanıcısı bulunamadı');
+            return res.status(404).json({ error: 'Yigit kullanıcısı bulunamadı' });
+        }
+        
+        console.log('✅ Yigit admin yapıldı');
+        res.json({ 
+            message: 'Yigit başarıyla admin yapıldı', 
+            user: result.rows[0] 
+        });
+    });
+});
+
 // İstatistikler
 app.get('/api/stats', authenticateToken, (req, res) => {
     const queries = {

@@ -242,7 +242,7 @@ class VIPService {
             addGuestBtn.addEventListener('click', () => this.showAddGuestModal());
         }
         if (addGuestForm) {
-            addGuestForm.addEventListener('click', (e) => this.handleAddGuest(e));
+            addGuestForm.addEventListener('submit', (e) => this.handleAddGuest(e));
         }
         
         // Çıkış

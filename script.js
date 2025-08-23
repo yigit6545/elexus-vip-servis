@@ -1505,27 +1505,44 @@ class VIPService {
 
     // Modal gösterme/gizleme yardımcı fonksiyonları
     showEditBirthdayModal(birthday) {
-        // Edit modal'ı göster ve verileri doldur
-        console.log('Edit birthday modal:', birthday);
-        // TODO: Edit modal'ı oluştur
+        const modal = document.getElementById('editBirthdayModal');
+        if (!modal) return;
+        
+        // Form alanlarını doldur
+        document.getElementById('editBirthdayId').value = birthday.id;
+        document.getElementById('editBirthdayName').value = birthday.guest_name;
+        document.getElementById('editBirthdayDate').value = birthday.birth_date;
+        document.getElementById('editBirthdayClass').value = birthday.vip_class || '';
+        document.getElementById('editBirthdayNotes').value = birthday.notes || '';
+        
+        // Modal'ı göster
+        modal.style.display = 'block';
     }
 
     closeEditBirthdayModal() {
-        // Edit modal'ı gizle
-        console.log('Close edit birthday modal');
-        // TODO: Edit modal'ı gizle
+        const modal = document.getElementById('editBirthdayModal');
+        if (modal) modal.style.display = 'none';
     }
 
     showEditEventModal(event) {
-        // Edit modal'ı göster ve verileri doldur
-        console.log('Edit event modal:', event);
-        // TODO: Edit modal'ı oluştur
+        const modal = document.getElementById('editEventModal');
+        if (!modal) return;
+        
+        // Form alanlarını doldur
+        document.getElementById('editEventName').value = event.event_name;
+        document.getElementById('editEventType').value = event.event_type;
+        document.getElementById('editEventDate').value = event.event_date;
+        document.getElementById('editEventTime').value = event.event_time || '';
+        document.getElementById('editEventLocation').value = event.location;
+        document.getElementById('editEventDescription').value = event.description || '';
+        
+        // Modal'ı göster
+        modal.style.display = 'block';
     }
 
     closeEditEventModal() {
-        // Edit modal'ı gizle
-        console.log('Close edit event modal');
-        // TODO: Edit modal'ı gizle
+        const modal = document.getElementById('editEventModal');
+        if (modal) modal.style.display = 'none';
     }
 }
 

@@ -34,14 +34,18 @@ class VIPService {
 
     // Sayfa içeriğini yükle
     loadPageContent() {
+        console.log('🔍 loadPageContent() fonksiyonu başladı');
         const currentPage = this.getCurrentPage();
         console.log('🔍 Mevcut sayfa:', currentPage);
         
         switch (currentPage) {
             case 'guests':
                 console.log('🏠 Ana sayfa içeriği yükleniyor...');
+                console.log('🔍 hideLoginModal() çağrılıyor...');
                 this.hideLoginModal(); // Login modal'ı gizle
+                console.log('🔍 showMainContent() çağrılıyor...');
                 this.showMainContent(); // Ana içeriği göster
+                console.log('🔍 loadGuests() çağrılıyor...');
                 this.loadGuests();
                 break;
             case 'birthdays':
@@ -89,7 +93,9 @@ class VIPService {
         // Session kontrolü yap
         if (this.isAuthenticated) {
             console.log('✅ Session aktif, sayfa içeriği yükleniyor...');
+            console.log('🔍 loadPageContent() çağrılıyor...');
             this.loadPageContent();
+            console.log('🔍 loadPageContent() çağrıldı');
         } else {
             console.log('⚠️ Session bulunamadı, login ekranı gösteriliyor');
             this.showLoginModal();

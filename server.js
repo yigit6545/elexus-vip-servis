@@ -372,6 +372,56 @@ app.delete('/api/guests/:id', authenticateToken, (req, res) => {
     });
 });
 
+// Misafir fotoğrafını sil
+app.delete('/api/guests/:id/photo', authenticateToken, (req, res) => {
+    const { id } = req.params;
+
+    console.log('🔍 Fotoğraf siliniyor:', { guestId: id, user: req.user.username });
+
+    // Önce misafir bilgilerini al
+    pool.query('SELECT photo_path FROM guests WHERE id = $1', [id], (err, result) => {
+        if (err) {
+            console.error('❌ Misafir bilgisi getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+
+        if (result.rows.length === 0) {
+            console.log('❌ Misafir bulunamadı:', id);
+            return res.status(404).json({ error: 'Misafir bulunamadı' });
+        }
+
+        const guest = result.rows[0];
+
+        if (!guest.photo_path) {
+            console.log('❌ Misafirin fotoğrafı yok:', id);
+            return res.status(400).json({ error: 'Misafirin fotoğrafı bulunamadı' });
+        }
+
+        // Fotoğraf dosyasını sil
+        const photoPath = path.join(__dirname, guest.photo_path);
+        if (fs.existsSync(photoPath)) {
+            try {
+                fs.unlinkSync(photoPath);
+                console.log('✅ Fotoğraf dosyası silindi:', photoPath);
+            } catch (error) {
+                console.error('❌ Fotoğraf dosyası silinirken hata:', error);
+                return res.status(500).json({ error: 'Fotoğraf dosyası silinirken hata oluştu' });
+            }
+        }
+
+        // Veritabanından fotoğraf yolunu temizle
+        pool.query('UPDATE guests SET photo_path = NULL WHERE id = $1', [id], (err) => {
+            if (err) {
+                console.error('❌ Veritabanı güncelleme hatası:', err);
+                return res.status(500).json({ error: 'Veritabanı güncellenirken hata oluştu' });
+            }
+
+            console.log('✅ Misafir fotoğrafı başarıyla silindi:', id);
+            res.json({ message: 'Fotoğraf başarıyla silindi' });
+        });
+    });
+});
+
 // Misafir ziyareti ekle
 app.post('/api/guests/:id/visits', authenticateToken, (req, res) => {
     const { id } = req.params;

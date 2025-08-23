@@ -76,6 +76,12 @@ class VIPService {
         if (logoutBtn) {
             logoutBtn.addEventListener('click', () => this.logout());
         }
+
+        // Fotoğraf temizleme (admin)
+        const cleanupPhotosBtn = document.getElementById('cleanupPhotosBtn');
+        if (cleanupPhotosBtn) {
+            cleanupPhotosBtn.addEventListener('click', () => this.cleanupAllPhotos());
+        }
     }
 
     // API istekleri için yardımcı fonksiyon
@@ -321,6 +327,16 @@ class VIPService {
         }
         
         document.querySelector('.header-controls').insertBefore(userInfo, document.getElementById('logoutBtn'));
+
+        // Admin kullanıcılar için temizlik butonunu göster
+        const cleanupPhotosBtn = document.getElementById('cleanupPhotosBtn');
+        if (cleanupPhotosBtn) {
+            if (this.currentUser.role === 'admin') {
+                cleanupPhotosBtn.style.display = 'inline-block';
+            } else {
+                cleanupPhotosBtn.style.display = 'none';
+            }
+        }
     }
 
     // Misafirleri yükle
@@ -896,6 +912,38 @@ class VIPService {
         } catch (error) {
             console.error('Fotoğraf silme hatası:', error);
             this.showNotification('Fotoğraf silinirken bir hata oluştu', 'error');
+        }
+    }
+
+    // Tüm eksik fotoğrafları temizle (admin fonksiyonu)
+    async cleanupAllPhotos() {
+        try {
+            const confirmed = confirm('Tüm eksik fotoğraf kayıtlarını temizlemek istediğinizden emin misiniz? Bu işlem geri alınamaz.');
+            if (!confirmed) return;
+
+            this.showNotification('Fotoğraf temizliği başlatılıyor...', 'info');
+
+            const response = await fetch(`${this.apiUrl}/admin/cleanup-photos`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            if (response.ok) {
+                const result = await response.json();
+                this.showNotification(`Fotoğraf temizliği tamamlandı! ${result.cleaned} eksik fotoğraf temizlendi.`, 'success');
+                
+                // Misafir listesini güncelle
+                await this.loadGuests();
+            } else {
+                const error = await response.json();
+                this.showNotification(`Temizlik hatası: ${error.message}`, 'error');
+            }
+        } catch (error) {
+            console.error('Fotoğraf temizliği hatası:', error);
+            this.showNotification('Fotoğraf temizliği sırasında bir hata oluştu', 'error');
         }
     }
 

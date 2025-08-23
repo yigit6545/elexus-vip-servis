@@ -422,6 +422,87 @@ app.delete('/api/guests/:id/photo', authenticateToken, (req, res) => {
     });
 });
 
+// Tüm eksik fotoğrafları temizle (admin endpoint)
+app.post('/api/admin/cleanup-photos', authenticateToken, (req, res) => {
+    // Admin kontrolü
+    if (req.user.role !== 'admin') {
+        return res.status(403).json({ error: 'Bu işlem için admin yetkisi gerekli' });
+    }
+
+    console.log('🔍 Toplu fotoğraf temizliği başlatılıyor:', { user: req.user.username });
+
+    // Tüm misafirlerin fotoğraf yollarını al
+    pool.query('SELECT id, name, photo_path FROM guests WHERE photo_path IS NOT NULL', (err, result) => {
+        if (err) {
+            console.error('❌ Misafir bilgisi getirme hatası:', err);
+            return res.status(500).json({ error: 'Veritabanı hatası' });
+        }
+
+        console.log(`📸 ${result.rows.length} misafirde fotoğraf bulundu`);
+
+        let cleanedCount = 0;
+        let totalPhotos = result.rows.length;
+
+        if (totalPhotos === 0) {
+            return res.json({ message: 'Temizlenecek fotoğraf bulunamadı', cleaned: 0, total: 0 });
+        }
+
+        // Her fotoğrafı kontrol et
+        result.rows.forEach((guest, index) => {
+            if (guest.photo_path) {
+                const photoPath = path.join(__dirname, guest.photo_path);
+                
+                // Dosya var mı kontrol et
+                if (!fs.existsSync(photoPath)) {
+                    console.log(`❌ Fotoğraf bulunamadı: ${guest.name} (${guest.photo_path})`);
+                    
+                    // Veritabanından fotoğraf yolunu temizle
+                    pool.query('UPDATE guests SET photo_path = NULL WHERE id = $1', [guest.id], (err) => {
+                        if (err) {
+                            console.error(`❌ ${guest.name} için güncelleme hatası:`, err);
+                        } else {
+                            cleanedCount++;
+                            console.log(`✅ ${guest.name} için fotoğraf yolu temizlendi`);
+                        }
+
+                        // Son fotoğraf kontrol edildiğinde response gönder
+                        if (index === totalPhotos - 1) {
+                            console.log(`🎯 Toplam ${cleanedCount} misafirde eksik fotoğraf temizlendi`);
+                            res.json({ 
+                                message: 'Fotoğraf temizliği tamamlandı', 
+                                cleaned: cleanedCount, 
+                                total: totalPhotos 
+                            });
+                        }
+                    });
+                } else {
+                    console.log(`✅ Fotoğraf mevcut: ${guest.name} (${guest.photo_path})`);
+                    
+                    // Son fotoğraf kontrol edildiğinde response gönder
+                    if (index === totalPhotos - 1) {
+                        console.log(`🎯 Toplam ${cleanedCount} misafirde eksik fotoğraf temizlendi`);
+                        res.json({ 
+                            message: 'Fotoğraf temizliği tamamlandı', 
+                            cleaned: cleanedCount, 
+                            total: totalPhotos 
+                        });
+                    }
+                }
+            } else {
+                // Son fotoğraf kontrol edildiğinde response gönder
+                if (index === totalPhotos - 1) {
+                    console.log(`🎯 Toplam ${cleanedCount} misafirde eksik fotoğraf temizlendi`);
+                    res.json({ 
+                        message: 'Fotoğraf temizliği tamamlandı', 
+                        cleaned: cleanedCount, 
+                        total: totalPhotos 
+                    });
+                }
+            }
+        });
+    });
+});
+
 // Misafir ziyareti ekle
 app.post('/api/guests/:id/visits', authenticateToken, (req, res) => {
     const { id } = req.params;

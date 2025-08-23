@@ -195,36 +195,7 @@ class VIPService {
         });
     }
     
-    // Sayfa türüne göre içerik yükleme
-    loadPageContent() {
-        const currentPage = this.getCurrentPage();
-        console.log('📄 Mevcut sayfa:', currentPage);
-        
-        switch (currentPage) {
-            case 'index':
-                console.log('🏠 Ana sayfa içeriği yükleniyor...');
-                this.loadGuests();
-                break;
-            case 'birthday':
-                console.log('🎂 Doğum günleri sayfası içeriği yükleniyor...');
-                this.loadBirthdays();
-                break;
-            case 'events':
-                console.log('🎵 Etkinlikler sayfası içeriği yükleniyor...');
-                this.loadEvents();
-                break;
-            default:
-                console.log('❓ Bilinmeyen sayfa:', currentPage);
-        }
-    }
-    
-    // Mevcut sayfayı tespit et
-    getCurrentPage() {
-        const path = window.location.pathname;
-        if (path.includes('birthday.html')) return 'birthday';
-        if (path.includes('events.html')) return 'events';
-        return 'index';
-    }
+
     
     // Event listener'ları kurma
     setupEventListeners() {

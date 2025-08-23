@@ -15,19 +15,50 @@ class VIPService {
         console.log('🚀 VIP Service başlatılıyor...');
         this.setupEventListeners();
         
-        // Kimlik doğrulama kontrolü - TÜM SAYFALARDA
-        const isAuthenticated = await this.checkAuthStatus();
-        console.log('🔐 Kimlik doğrulama sonucu:', isAuthenticated);
-        
-        if (!isAuthenticated) {
-            console.log('⚠️ Kullanıcı giriş yapmamış, login ekranına yönlendiriliyor');
-            // Tüm sayfalarda login ekranına yönlendir
-            window.location.href = 'index.html';
-            return;
-        }
+        // HEMEN Authentication kontrolü yap - VIP Service yüklenmeden önce
+        await this.immediateAuthCheck();
         
         // Sayfa türüne göre içerik yükle
         this.loadPageContent();
+    }
+    
+    // HEMEN Authentication kontrolü
+    async immediateAuthCheck() {
+        console.log('🔐 HEMEN Authentication kontrolü başlatılıyor...');
+        
+        // LocalStorage'dan token kontrolü
+        const token = localStorage.getItem('authToken');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            console.log('⚠️ Token veya user bulunamadı, login ekranına yönlendiriliyor');
+            this.redirectToLogin();
+            return false;
+        }
+        
+        try {
+            // Token'ı parse et
+            const userData = JSON.parse(user);
+            this.authToken = token;
+            this.currentUser = userData;
+            
+            console.log('✅ HEMEN Authentication başarılı:', userData.username);
+            return true;
+        } catch (error) {
+            console.error('❌ User data parse hatası:', error);
+            this.redirectToLogin();
+            return false;
+        }
+    }
+    
+    // Login ekranına yönlendir
+    redirectToLogin() {
+        console.log('🔄 Login ekranına yönlendiriliyor...');
+        
+        // Mevcut sayfa index.html değilse yönlendir
+        if (!window.location.pathname.includes('index.html')) {
+            window.location.href = 'index.html';
+        }
     }
 
     // Event listener'ları kurma
@@ -117,6 +148,13 @@ class VIPService {
     
     // Sayfa türüne göre içerik yükleme
     loadPageContent() {
+        // Önce authentication kontrolü
+        if (!this.authToken || !this.currentUser) {
+            console.log('⚠️ Authentication yok, içerik yüklenmiyor');
+            this.redirectToLogin();
+            return;
+        }
+        
         const currentPage = this.getCurrentPage();
         console.log('📄 Mevcut sayfa:', currentPage);
         

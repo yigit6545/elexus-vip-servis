@@ -188,13 +188,17 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-            // Authentication kontrolü
-            const isAuthenticated = await window.vipService.checkAuthStatus();
-            if (!isAuthenticated) {
-                console.log('⚠️ Kullanıcı giriş yapmamış, login ekranına yönlendiriliyor');
-                window.location.href = 'index.html';
-                return;
-            }
+                    // HEMEN Authentication kontrolü
+        const token = localStorage.getItem('authToken');
+        const user = localStorage.getItem('user');
+        
+        if (!token || !user) {
+            console.log('⚠️ Token veya user bulunamadı, login ekranına yönlendiriliyor');
+            window.location.href = 'index.html';
+            return;
+        }
+        
+        console.log('✅ Authentication başarılı, doğum günleri yükleniyor...');
             
             // Doğum günlerini yükle
             try {

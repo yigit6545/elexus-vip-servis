@@ -6,6 +6,7 @@ class VIPService {
         this.currentUser = null;
         this.authToken = null;
         this.apiBaseUrl = '/api';
+        this.apiUrl = '/api'; // Admin fonksiyonları için
         this.isSubmitting = false; // Duplicate submit önleme flag'i
         this.init();
     }

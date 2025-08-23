@@ -21,6 +21,12 @@ class VIPService {
         
         if (!isAuthenticated) {
             console.log('⚠️ Kullanıcı giriş yapmamış, login ekranı gösteriliyor');
+            
+            // Ana sayfada değilse authentication kontrolü yapma
+            if (!document.getElementById('mainContent')) {
+                console.log('Ana sayfa değil, authentication kontrolü atlanıyor');
+                return;
+            }
         }
     }
 
@@ -1061,7 +1067,10 @@ class VIPService {
 
     // Ana içeriği gösterme
     showMainContent() {
-        document.getElementById('mainContent').classList.remove('hidden');
+        const mainContent = document.getElementById('mainContent');
+        if (mainContent) {
+            mainContent.classList.remove('hidden');
+        }
     }
 
     // Login modal'ını gösterme
@@ -1071,12 +1080,21 @@ class VIPService {
 
     // Ana içeriği gizleme
     hideMainContent() {
-        document.getElementById('mainContent').classList.add('hidden');
+        const mainContent = document.getElementById('mainContent');
+        if (mainContent) {
+            mainContent.classList.add('hidden');
+        }
     }
 
     // Doğum günü sayfası fonksiyonları
     async loadBirthdays() {
         try {
+            // Sadece doğum günü sayfasında çalışsın
+            if (!document.getElementById('birthdayList')) {
+                console.log('Doğum günü sayfası değil, yükleme atlanıyor');
+                return;
+            }
+
             const response = await fetch(`${this.apiBaseUrl}/birthdays`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`
@@ -1155,6 +1173,12 @@ class VIPService {
     // Etkinlik sayfası fonksiyonları
     async loadEvents() {
         try {
+            // Sadece etkinlik sayfasında çalışsın
+            if (!document.getElementById('eventList')) {
+                console.log('Etkinlik sayfası değil, yükleme atlanıyor');
+                return;
+            }
+
             const response = await fetch(`${this.apiBaseUrl}/events`, {
                 headers: {
                     'Authorization': `Bearer ${this.authToken}`

@@ -82,6 +82,13 @@ async function createTables() {
         `);
         console.log('✅ Events tablosu oluşturuldu.');
         
+        // guests.marketing_info kolonunu garanti altına al
+        await pool.query(`
+            ALTER TABLE guests 
+            ADD COLUMN IF NOT EXISTS marketing_info TEXT
+        `);
+        console.log('✅ guests.marketing_info kolonu kontrol edildi/eklendi.');
+        
         // Örnek veriler ekle (devre dışı)
         // await addSampleData();
         

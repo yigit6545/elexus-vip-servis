@@ -126,6 +126,57 @@
         </div>
     </div>
 
+    <!-- Edit Birthday Modal -->
+    <div id="editBirthdayModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Doğum Günü Düzenle</h2>
+                <button type="button" class="close-btn" onclick="window.vipService.closeEditBirthdayModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editBirthdayForm">
+                <input type="hidden" id="editBirthdayId" name="id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editBirthdayName">Misafir Adı *</label>
+                        <input type="text" id="editBirthdayName" name="guest_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBirthdayDate">Doğum Günü *</label>
+                        <input type="date" id="editBirthdayDate" name="birth_date" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editBirthdayClass">VIP Sınıfı</label>
+                        <select id="editBirthdayClass" name="vip_class">
+                            <option value="">Seçiniz</option>
+                            <option value="VIP">VIP</option>
+                            <option value="A">A Grubu</option>
+                            <option value="B">B Grubu</option>
+                            <option value="C">C Grubu</option>
+                            <option value="D">D Grubu</option>
+                            <option value="Lokal">Lokal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editBirthdayPhoto">Fotoğraf</label>
+                        <input type="file" id="editBirthdayPhoto" name="photo" accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editBirthdayNotes">Notlar</label>
+                    <textarea id="editBirthdayNotes" name="notes" rows="3" placeholder="Özel notlar, tercihler..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="window.vipService.closeEditBirthdayModal()">İptal</button>
+                    <button type="submit" class="submit-btn">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         // Doğum günü sayfası yüklendiğinde

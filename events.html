@@ -134,6 +134,65 @@
         </div>
     </div>
 
+    <!-- Edit Event Modal -->
+    <div id="editEventModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-edit"></i> Etkinlik Düzenle</h2>
+                <button type="button" class="close-btn" onclick="window.vipService.closeEditEventModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="editEventForm">
+                <input type="hidden" id="editEventId" name="id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editEventName">Etkinlik Adı *</label>
+                        <input type="text" id="editEventName" name="event_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEventType">Etkinlik Türü *</label>
+                        <select id="editEventType" name="event_type" required>
+                            <option value="">Seçiniz</option>
+                            <option value="concert">Konser</option>
+                            <option value="party">Parti</option>
+                            <option value="show">Show</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editEventDate">Tarih *</label>
+                        <input type="date" id="editEventDate" name="event_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEventTime">Saat</label>
+                        <input type="time" id="editEventTime" name="event_time">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="editEventLocation">Yer *</label>
+                        <input type="text" id="editEventLocation" name="location" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="editEventPhoto">Fotoğraf</label>
+                        <input type="file" id="editEventPhoto" name="photo" accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="editEventDescription">Açıklama</label>
+                    <textarea id="editEventDescription" name="description" rows="3" placeholder="Etkinlik detayları..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="window.vipService.closeEditEventModal()">İptal</button>
+                    <button type="submit" class="submit-btn">Güncelle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script src="script.js"></script>
     <script>
         // Etkinlik sayfası yüklendiğinde

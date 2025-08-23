@@ -166,7 +166,21 @@
             if (addEventForm) {
                 addEventForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    // Form işleme kodu buraya eklenecek
+                    console.log('🎵 Etkinlik formu gönderiliyor...');
+                    
+                    try {
+                        // Form verilerini FormData'ya çevir
+                        const formData = new FormData(addEventForm);
+                        
+                        // Etkinlik ekle
+                        await window.vipService.addEvent(formData);
+                        
+                        // Formu temizle
+                        addEventForm.reset();
+                        
+                    } catch (error) {
+                        console.error('Form gönderme hatası:', error);
+                    }
                 });
             }
             

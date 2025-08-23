@@ -1299,6 +1299,234 @@ class VIPService {
         const modal = document.getElementById('addEventModal');
         if (modal) modal.style.display = 'none';
     }
+
+    // Doğum günü CRUD işlemleri
+    async addBirthday(formData) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/birthdays`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Doğum günü eklenemedi');
+
+            const newBirthday = await response.json();
+            this.showNotification('Doğum günü başarıyla eklendi!', 'success');
+            this.closeAddBirthdayModal();
+            this.loadBirthdays(); // Listeyi yenile
+
+            return newBirthday;
+        } catch (error) {
+            console.error('Doğum günü ekleme hatası:', error);
+            this.showNotification('Doğum günü eklenirken hata oluştu', 'error');
+            throw error;
+        }
+    }
+
+    async editBirthday(birthdayId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/birthdays/${birthdayId}`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Doğum günü bilgileri alınamadı');
+
+            const birthday = await response.json();
+            this.showEditBirthdayModal(birthday);
+        } catch (error) {
+            console.error('Doğum günü düzenleme hatası:', error);
+            this.showNotification('Doğum günü düzenlenirken hata oluştu', 'error');
+        }
+    }
+
+    async updateBirthday(birthdayId, formData) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/birthdays/${birthdayId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Doğum günü güncellenemedi');
+
+            const updatedBirthday = await response.json();
+            this.showNotification('Doğum günü başarıyla güncellendi!', 'success');
+            this.closeEditBirthdayModal();
+            this.loadBirthdays(); // Listeyi yenile
+
+            return updatedBirthday;
+        } catch (error) {
+            console.error('Doğum günü güncelleme hatası:', error);
+            this.showNotification('Doğum günü güncellenirken hata oluştu', 'error');
+            throw error;
+        }
+    }
+
+    async deleteBirthday(birthdayId) {
+        if (!confirm('Bu doğum gününü silmek istediğinizden emin misiniz?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/birthdays/${birthdayId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Doğum günü silinemedi');
+
+            this.showNotification('Doğum günü başarıyla silindi!', 'success');
+            this.loadBirthdays(); // Listeyi yenile
+        } catch (error) {
+            console.error('Doğum günü silme hatası:', error);
+            this.showNotification('Doğum günü silinirken hata oluştu', 'error');
+        }
+    }
+
+    // Etkinlik CRUD işlemleri
+    async addEvent(formData) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Etkinlik eklenemedi');
+
+            const newEvent = await response.json();
+            this.showNotification('Etkinlik başarıyla eklendi!', 'success');
+            this.closeAddEventModal();
+            this.loadEvents(); // Listeyi yenile
+
+            return newEvent;
+        } catch (error) {
+            console.error('Etkinlik ekleme hatası:', error);
+            this.showNotification('Etkinlik eklenirken hata oluştu', 'error');
+            throw error;
+        }
+    }
+
+    async editEvent(eventId) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events/${eventId}`, {
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Etkinlik bilgileri alınamadı');
+
+            const event = await response.json();
+            this.showEditEventModal(event);
+        } catch (error) {
+            console.error('Etkinlik düzenleme hatası:', error);
+            this.showNotification('Etkinlik düzenlenirken hata oluştu', 'error');
+        }
+    }
+
+    async updateEvent(eventId, formData) {
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events/${eventId}`, {
+                method: 'PUT',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                },
+                body: formData
+            });
+
+            if (!response.ok) throw new Error('Etkinlik güncellenemedi');
+
+            const updatedEvent = await response.json();
+            this.showNotification('Etkinlik başarıyla güncellendi!', 'success');
+            this.closeEditEventModal();
+            this.loadEvents(); // Listeyi yenile
+
+            return updatedEvent;
+        } catch (error) {
+            console.error('Etkinlik güncelleme hatası:', error);
+            this.showNotification('Etkinlik güncellenirken hata oluştu', 'error');
+            throw error;
+        }
+    }
+
+    async deleteEvent(eventId) {
+        if (!confirm('Bu etkinliği silmek istediğinizden emin misiniz?')) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`${this.apiBaseUrl}/events/${eventId}`, {
+                method: 'DELETE',
+                headers: {
+                    'Authorization': `Bearer ${this.authToken}`
+                }
+            });
+
+            if (!response.ok) throw new Error('Etkinlik silinemedi');
+
+            this.showNotification('Etkinlik başarıyla silindi!', 'success');
+            this.loadEvents(); // Listeyi yenile
+        } catch (error) {
+            console.error('Etkinlik silme hatası:', error);
+            this.showNotification('Etkinlik silinirken hata oluştu', 'error');
+        }
+    }
+
+    // Form işleme yardımcı fonksiyonları
+    createFormData(form) {
+        const formData = new FormData();
+        
+        // Form alanlarını FormData'ya ekle
+        const formElements = form.elements;
+        for (let element of formElements) {
+            if (element.name && element.value) {
+                if (element.type === 'file' && element.files[0]) {
+                    formData.append(element.name, element.files[0]);
+                } else if (element.type !== 'file') {
+                    formData.append(element.name, element.value);
+                }
+            }
+        }
+        
+        return formData;
+    }
+
+    // Modal gösterme/gizleme yardımcı fonksiyonları
+    showEditBirthdayModal(birthday) {
+        // Edit modal'ı göster ve verileri doldur
+        console.log('Edit birthday modal:', birthday);
+        // TODO: Edit modal'ı oluştur
+    }
+
+    closeEditBirthdayModal() {
+        // Edit modal'ı gizle
+        console.log('Close edit birthday modal');
+        // TODO: Edit modal'ı gizle
+    }
+
+    showEditEventModal(event) {
+        // Edit modal'ı göster ve verileri doldur
+        console.log('Edit event modal:', event);
+        // TODO: Edit modal'ı oluştur
+    }
+
+    closeEditEventModal() {
+        // Edit modal'ı gizle
+        console.log('Close edit event modal');
+        // TODO: Edit modal'ı gizle
+    }
 }
 
 

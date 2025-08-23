@@ -158,7 +158,21 @@
             if (addBirthdayForm) {
                 addBirthdayForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
-                    // Form işleme kodu buraya eklenecek
+                    console.log('🎂 Doğum günü formu gönderiliyor...');
+                    
+                    try {
+                        // Form verilerini FormData'ya çevir
+                        const formData = new FormData(addBirthdayForm);
+                        
+                        // Doğum günü ekle
+                        await window.vipService.addBirthday(formData);
+                        
+                        // Formu temizle
+                        addBirthdayForm.reset();
+                        
+                    } catch (error) {
+                        console.error('Form gönderme hatası:', error);
+                    }
                 });
             }
             

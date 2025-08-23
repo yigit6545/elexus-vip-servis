@@ -1216,8 +1216,8 @@ class VIPService {
             // JWT token kontrolü
             const token = localStorage.getItem('token');
             if (!token) {
-                console.log('⚠️ JWT token bulunamadı, doğum günleri yüklenemiyor');
-                this.showNotification('Giriş yapmanız gerekiyor!', 'error');
+                console.log('⚠️ JWT token bulunamadı, ana sayfaya yönlendiriliyor...');
+                window.location.href = 'index.html';
                 return;
             }
 
@@ -1308,8 +1308,8 @@ class VIPService {
             // JWT token kontrolü
             const token = localStorage.getItem('token');
             if (!token) {
-                console.log('⚠️ JWT token bulunamadı, etkinlikler yüklenemiyor');
-                this.showNotification('Giriş yapmanız gerekiyor!', 'error');
+                console.log('⚠️ JWT token bulunamadı, ana sayfaya yönlendiriliyor...');
+                window.location.href = 'index.html';
                 return;
             }
 

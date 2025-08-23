@@ -41,6 +41,7 @@ class VIPService {
         switch (currentPage) {
             case 'guests':
                 console.log('🏠 Ana sayfa içeriği yükleniyor...');
+                console.log('🔍 Case "guests" bulundu, kodlar çalıştırılıyor...');
                 console.log('🔍 hideLoginModal() çağrılıyor...');
                 this.hideLoginModal(); // Login modal'ı gizle
                 console.log('🔍 showMainContent() çağrılıyor...');
@@ -57,9 +58,13 @@ class VIPService {
                 this.loadEvents();
                 break;
             default:
-                console.log('🏠 Varsayılan: Ana sayfa içeriği yükleniyor...');
+                console.log('🏠 Varsayılan case çalıştı!');
+                console.log('🔍 Varsayılan: Ana sayfa içeriği yükleniyor...');
+                console.log('🔍 hideLoginModal() çağrılıyor...');
                 this.hideLoginModal(); // Login modal'ı gizle
+                console.log('🔍 showMainContent() çağrılıyor...');
                 this.showMainContent(); // Ana içeriği göster
+                console.log('🔍 loadGuests() çağrılıyor...');
                 this.loadGuests();
         }
     }
@@ -79,6 +84,7 @@ class VIPService {
         }
         
         console.log('🏠 Ana sayfa tespit edildi');
+        console.log('🔍 Döndürülen değer: guests');
         return 'guests';
     }
 

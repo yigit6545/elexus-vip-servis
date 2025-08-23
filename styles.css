@@ -413,7 +413,7 @@ body {
 
 /* Ana içerik */
 .main-content {
-    max-width: 1200px;
+    max-width: 1400px;
     margin: 0 auto;
     padding: 2rem 1rem;
 }
@@ -421,8 +421,30 @@ body {
 /* Misafir listesi */
 .guest-list {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 2rem;
+    justify-items: center;
+    max-width: 100%;
+}
+
+/* Responsive tasarım */
+@media (max-width: 768px) {
+    .guest-list {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 0 1rem;
+    }
+    
+    .guest-card {
+        max-width: 100%;
+    }
+}
+
+@media (min-width: 1200px) {
+    .guest-list {
+        grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+        gap: 2.5rem;
+    }
 }
 
 /* Misafir kartı */
@@ -435,6 +457,8 @@ body {
     position: relative;
     overflow: hidden;
     cursor: pointer;
+    width: 100%;
+    max-width: 380px;
 }
 
 .guest-card:hover {

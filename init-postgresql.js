@@ -41,6 +41,7 @@ async function initDatabase() {
                 cigar VARCHAR(100),
                 special_requests TEXT,
                 other_info TEXT,
+                marketing_info TEXT,
                 photo_path VARCHAR(255),
                 created_by INTEGER REFERENCES users(id),
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,

@@ -739,6 +739,7 @@ class VIPService {
         formData.append('cigar', document.getElementById('guestCigar').value || '');
         formData.append('specialRequests', document.getElementById('guestSpecialRequests').value || '');
         formData.append('otherInfo', document.getElementById('guestOtherInfo').value || '');
+        formData.append('marketingInfo', document.getElementById('guestMarketing').value || '');
 
         // Fotoğraf varsa ekle
         const photoFile = document.getElementById('guestPhoto').files[0];
@@ -933,6 +934,7 @@ class VIPService {
         formData.append('cigar', document.getElementById('guestCigar').value || '');
         formData.append('specialRequests', document.getElementById('guestSpecialRequests').value || '');
         formData.append('otherInfo', document.getElementById('guestOtherInfo').value || '');
+        formData.append('marketingInfo', document.getElementById('guestMarketing').value || '');
 
         // Fotoğraf varsa ekle
         const photoFile = document.getElementById('guestPhoto').files[0];

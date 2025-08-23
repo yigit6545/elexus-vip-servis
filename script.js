@@ -594,6 +594,10 @@ class VIPService {
                         <span class="detail-label">Diğer Bilgiler:</span>
                         <span class="detail-value">${guest.other_info || 'Yok'}</span>
                     </div>
+                    <div class="detail-item">
+                        <span class="detail-label">Marketing Bilgisi:</span>
+                        <span class="detail-value">${guest.marketing_info || 'Yok'}</span>
+                    </div>
                 </div>
                 <div class="guest-footer">
                     <small>Eklenme: ${new Date(guest.created_at).toLocaleDateString('tr-TR')}</small>
@@ -620,6 +624,7 @@ class VIPService {
         document.getElementById('guestCigar').value = guest.cigar || '';
         document.getElementById('guestSpecialRequests').value = guest.special_requests || '';
         document.getElementById('guestOtherInfo').value = guest.other_info || '';
+        document.getElementById('guestMarketing').value = guest.marketing_info || '';
 
         // Edit mode flag'i ekle
         const form = document.getElementById('addGuestForm');

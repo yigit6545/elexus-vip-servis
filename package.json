@@ -10,7 +10,8 @@
     "init-postgres": "node init-postgresql.js",
     "add-users": "node add-users.js",
     "fix-db": "node fix-database.js",
-    "update-guests": "node update-guests.js"
+    "update-guests": "node update-guests.js",
+    "add-marketing": "node add-marketing-column.js"
   },
   "keywords": [
     "casino",

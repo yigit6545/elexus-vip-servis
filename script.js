@@ -553,8 +553,14 @@ class VIPService {
         guestList.innerHTML = this.filteredGuests.map(guest => `
             <div class="guest-card" data-guest-id="${guest.id}" onclick="window.vipService.openGuestDetail(${guest.id})">
                 <div class="guest-card-header">
-                    <div class="guest-photo-placeholder">
-                        <span>${guest.name.substring(0, 2).toUpperCase()}</span>
+                    <div class="guest-photo">
+                        ${guest.photo_path ? 
+                            `<img src="${guest.photo_path}" alt="${guest.name}" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">` : 
+                            ''
+                        }
+                        <div class="guest-photo-placeholder" style="${guest.photo_path ? 'display: none;' : 'display: flex;'}">
+                            <span>${guest.name.substring(0, 2).toUpperCase()}</span>
+                        </div>
                     </div>
                     <div class="guest-actions" onclick="event.stopPropagation()">
                         <button class="edit-btn" onclick="window.vipService.editGuest(${guest.id})" title="Düzenle">

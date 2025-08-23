@@ -348,6 +348,37 @@ body {
     align-items: center;
 }
 
+.guest-photo {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 auto;
+    border: 4px solid #e3f2fd;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.guest-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+}
+
+.guest-photo .guest-photo-placeholder {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
 .guest-actions {
     position: absolute;
     top: 0;

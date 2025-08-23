@@ -256,6 +256,95 @@ body {
     transform: translateY(-2px);
 }
 
+/* Ana Menü Dropdown Stilleri */
+.main-menu-dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+.main-menu-btn {
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.main-menu-btn:hover {
+    background: linear-gradient(135deg, #2a5298, #1e3c72);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(30, 60, 114, 0.3);
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background: white;
+    min-width: 220px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+    border-radius: 15px;
+    z-index: 1000;
+    overflow: hidden;
+    animation: dropdownSlideIn 0.3s ease;
+}
+
+.main-menu-dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.menu-item {
+    color: #333;
+    padding: 15px 20px;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.menu-item:last-child {
+    border-bottom: none;
+}
+
+.menu-item:hover {
+    background: #f8f9fa;
+    color: #1e3c72;
+    transform: translateX(5px);
+}
+
+.menu-item.active {
+    background: #e3f2fd;
+    color: #1e3c72;
+    font-weight: 600;
+}
+
+.menu-item i {
+    width: 20px;
+    text-align: center;
+    color: #1e3c72;
+}
+
+/* Dropdown Animasyonu */
+@keyframes dropdownSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
 .logout-btn {
     background: #f44336;
     color: white;

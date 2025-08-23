@@ -83,6 +83,30 @@ class VIPService {
         if (cleanupPhotosBtn) {
             cleanupPhotosBtn.addEventListener('click', () => this.cleanupAllPhotos());
         }
+
+        // Ana menü dropdown
+        const mainMenuBtn = document.getElementById('mainMenuBtn');
+        const menuItems = document.querySelectorAll('.menu-item');
+        
+        if (mainMenuBtn) {
+            mainMenuBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                this.toggleMainMenu();
+            });
+        }
+
+        // Menü item'larına tıklama
+        menuItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                this.handleMenuNavigation(item.dataset.page);
+            });
+        });
+
+        // Sayfa dışına tıklandığında menüyü kapat
+        document.addEventListener('click', () => {
+            this.closeMainMenu();
+        });
     }
 
     // API istekleri için yardımcı fonksiyon
@@ -971,6 +995,63 @@ class VIPService {
             console.error('Admin yapma hatası:', error);
             this.showNotification('Admin yapma sırasında bir hata oluştu', 'error');
         }
+    }
+
+    // Ana menü işlevleri
+    toggleMainMenu() {
+        const dropdown = document.querySelector('.dropdown-content');
+        if (dropdown) {
+            dropdown.style.display = dropdown.style.display === 'block' ? 'none' : 'block';
+        }
+    }
+
+    closeMainMenu() {
+        const dropdown = document.querySelector('.dropdown-content');
+        if (dropdown) {
+            dropdown.style.display = 'none';
+        }
+    }
+
+    handleMenuNavigation(page) {
+        // Aktif menü item'ını güncelle
+        document.querySelectorAll('.menu-item').forEach(item => {
+            item.classList.remove('active');
+        });
+        document.querySelector(`[data-page="${page}"]`).classList.add('active');
+
+        // Sayfa navigasyonu
+        switch (page) {
+            case 'guests':
+                this.showGuestsPage();
+                break;
+            case 'birthdays':
+                this.showBirthdaysPage();
+                break;
+            case 'events':
+                this.showEventsPage();
+                break;
+            default:
+                this.showGuestsPage();
+        }
+
+        // Menüyü kapat
+        this.closeMainMenu();
+    }
+
+    showGuestsPage() {
+        // Mevcut misafir sayfasını göster
+        document.getElementById('mainContent').style.display = 'block';
+        this.loadGuests();
+    }
+
+    showBirthdaysPage() {
+        // Doğum günü sayfasını göster (henüz oluşturulmadı)
+        this.showNotification('Doğum günü sayfası yakında eklenecek!', 'info');
+    }
+
+    showEventsPage() {
+        // Etkinlik sayfasını göster (henüz oluşturulmadı)
+        this.showNotification('Konser & Etkinlik sayfası yakında eklenecek!', 'info');
     }
 
     // Login modal'ını gizleme

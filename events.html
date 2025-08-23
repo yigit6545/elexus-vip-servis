@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konser & Etkinlikler - Elexus VIP Servis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1><i class="fas fa-crown"></i> VIP Servis</h1>
+                <div class="guest-count">
+                    <i class="fas fa-music"></i>
+                    <span id="totalEventCount">0</span> Etkinlik
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="search-container">
+                    <input type="text" id="eventSearchInput" placeholder="Etkinlik ara...">
+                    <button id="eventSearchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <button id="filterEventBtn" class="filter-btn">
+                    <i class="fas fa-filter"></i> Filtrele
+                </button>
+                <button id="addEventBtn" class="add-btn">
+                    <i class="fas fa-plus"></i> Etkinlik Ekle
+                </button>
+                
+                <!-- Ana Menü Dropdown -->
+                <div class="main-menu-dropdown">
+                    <button id="mainMenuBtn" class="main-menu-btn">
+                        <i class="fas fa-bars"></i> Menü
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="index.html" class="menu-item" data-page="guests">
+                            <i class="fas fa-users"></i> Misafirler
+                        </a>
+                        <a href="birthday.html" class="menu-item" data-page="birthdays">
+                            <i class="fas fa-birthday-cake"></i> Doğum Günleri
+                        </a>
+                        <a href="#" class="menu-item active" data-page="events">
+                            <i class="fas fa-music"></i> Konser & Etkinlikler
+                        </a>
+                    </div>
+                </div>
+                
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Panel -->
+    <div id="eventFilterPanel" class="filter-panel hidden">
+        <div class="filter-content">
+            <h3>Etkinlik Filtreleme</h3>
+            <div class="filter-options">
+                <label><input type="checkbox" value="concert" checked> Konser</label>
+                <label><input type="checkbox" value="party"> Parti</label>
+                <label><input type="checkbox" value="show"> Show</label>
+                <label><input type="checkbox" value="other"> Diğer</label>
+            </div>
+            <button id="applyEventFilter" class="apply-filter-btn">Uygula</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div id="eventList" class="guest-list">
+            <!-- Event cards will be populated here -->
+        </div>
+    </main>
+
+    <!-- Add Event Modal -->
+    <div id="addEventModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-music"></i> Yeni Etkinlik Ekle</h2>
+                <button type="button" class="close-btn" onclick="window.vipService.closeAddEventModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addEventForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventName">Etkinlik Adı *</label>
+                        <input type="text" id="eventName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventType">Etkinlik Türü *</label>
+                        <select id="eventType" required>
+                            <option value="">Seçiniz</option>
+                            <option value="concert">Konser</option>
+                            <option value="party">Parti</option>
+                            <option value="show">Show</option>
+                            <option value="other">Diğer</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventDate">Tarih *</label>
+                        <input type="date" id="eventDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventTime">Saat</label>
+                        <input type="time" id="eventTime">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventLocation">Yer *</label>
+                        <input type="text" id="eventLocation" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="eventPhoto">Fotoğraf</label>
+                        <input type="file" id="eventPhoto" accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="eventDescription">Açıklama</label>
+                    <textarea id="eventDescription" rows="3" placeholder="Etkinlik detayları..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="window.vipService.closeAddEventModal()">İptal</button>
+                    <button type="submit" class="submit-btn">Etkinlik Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

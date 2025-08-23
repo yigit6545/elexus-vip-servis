@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doğum Günleri - Elexus VIP Servis</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1><i class="fas fa-crown"></i> VIP Servis</h1>
+                <div class="guest-count">
+                    <i class="fas fa-birthday-cake"></i>
+                    <span id="totalBirthdayCount">0</span> Doğum Günü
+                </div>
+            </div>
+            <div class="header-controls">
+                <div class="search-container">
+                    <input type="text" id="birthdaySearchInput" placeholder="Doğum günü ara...">
+                    <button id="birthdaySearchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <button id="filterBirthdayBtn" class="filter-btn">
+                    <i class="fas fa-filter"></i> Filtrele
+                </button>
+                <button id="addBirthdayBtn" class="add-btn">
+                    <i class="fas fa-plus"></i> Doğum Günü Ekle
+                </button>
+                
+                <!-- Ana Menü Dropdown -->
+                <div class="main-menu-dropdown">
+                    <button id="mainMenuBtn" class="main-menu-btn">
+                        <i class="fas fa-bars"></i> Menü
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="index.html" class="menu-item" data-page="guests">
+                            <i class="fas fa-users"></i> Misafirler
+                        </a>
+                        <a href="#" class="menu-item active" data-page="birthdays">
+                            <i class="fas fa-birthday-cake"></i> Doğum Günleri
+                        </a>
+                        <a href="events.html" class="menu-item" data-page="events">
+                            <i class="fas fa-music"></i> Konser & Etkinlikler
+                        </a>
+                    </div>
+                </div>
+                
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Filter Panel -->
+    <div id="birthdayFilterPanel" class="filter-panel hidden">
+        <div class="filter-content">
+            <h3>Doğum Günü Filtreleme</h3>
+            <div class="filter-options">
+                <label><input type="checkbox" value="thisMonth" checked> Bu Ay</label>
+                <label><input type="checkbox" value="nextMonth"> Gelecek Ay</label>
+                <label><input type="checkbox" value="pastMonth"> Geçen Ay</label>
+                <label><input type="checkbox" value="all"> Tümü</label>
+            </div>
+            <button id="applyBirthdayFilter" class="apply-filter-btn">Uygula</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div id="birthdayList" class="guest-list">
+            <!-- Birthday cards will be populated here -->
+        </div>
+    </main>
+
+    <!-- Add Birthday Modal -->
+    <div id="addBirthdayModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-birthday-cake"></i> Yeni Doğum Günü Ekle</h2>
+                <button type="button" class="close-btn" onclick="window.vipService.closeAddBirthdayModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="addBirthdayForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="birthdayName">Misafir Adı *</label>
+                        <input type="text" id="birthdayName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdayDate">Doğum Günü *</label>
+                        <input type="date" id="birthdayDate" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="birthdayClass">VIP Sınıfı</label>
+                        <select id="birthdayClass">
+                            <option value="">Seçiniz</option>
+                            <option value="VIP">VIP</option>
+                            <option value="A">A Grubu</option>
+                            <option value="B">B Grubu</option>
+                            <option value="C">C Grubu</option>
+                            <option value="D">D Grubu</option>
+                            <option value="Lokal">Lokal</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="birthdayPhoto">Fotoğraf</label>
+                        <input type="file" id="birthdayPhoto" accept="image/*">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="birthdayNotes">Notlar</label>
+                    <textarea id="birthdayNotes" rows="3" placeholder="Özel notlar, tercihler..."></textarea>
+                </div>
+                <div class="form-actions">
+                    <button type="button" class="cancel-btn" onclick="window.vipService.closeAddBirthdayModal()">İptal</button>
+                    <button type="submit" class="submit-btn">Doğum Günü Ekle</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

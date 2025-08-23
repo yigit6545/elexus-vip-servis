@@ -257,7 +257,7 @@ app.get('/api/guests', authenticateToken, (req, res) => {
 
 // Misafir ekle
 app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) => {
-    const { name, class: guestClass, alcohol, cigarette, cigar, specialRequests, otherInfo } = req.body;
+    const { name, class: guestClass, alcohol, cigarette, cigar, specialRequests, otherInfo, marketingInfo } = req.body;
     
     if (!name || !guestClass) {
         return res.status(400).json({ error: 'Ad ve sınıf gerekli' });
@@ -274,14 +274,14 @@ app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) =>
     console.log('🔍 Misafir ekleniyor:', { name, guestClass, createdBy: req.user.id });
 
     const query = `
-        INSERT INTO guests (name, class, photo_path, alcohol, cigarette, cigar, special_requests, other_info, created_by)
-        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+        INSERT INTO guests (name, class, photo_path, alcohol, cigarette, cigar, special_requests, other_info, marketing_info, created_by)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
         RETURNING *
     `;
 
     pool.query(query, [
         name, guestClass, photoPath, alcohol || '', cigarette || '', cigar || '', 
-        specialRequests || '', otherInfo || '', req.user.id
+        specialRequests || '', otherInfo || '', marketingInfo || '', req.user.id
     ], (err, result) => {
         if (err) {
             console.error('❌ Misafir ekleme hatası:', err);
@@ -304,7 +304,7 @@ app.post('/api/guests', authenticateToken, upload.single('photo'), (req, res) =>
 // Misafir güncelle
 app.put('/api/guests/:id', authenticateToken, upload.single('photo'), (req, res) => {
     const { id } = req.params;
-    const { name, class: guestClass, alcohol, cigarette, cigar, specialRequests, otherInfo } = req.body;
+    const { name, class: guestClass, alcohol, cigarette, cigar, specialRequests, otherInfo, marketingInfo } = req.body;
     
     if (!name || !guestClass) {
         return res.status(400).json({ error: 'Ad ve sınıf gerekli' });
@@ -324,21 +324,21 @@ app.put('/api/guests/:id', authenticateToken, upload.single('photo'), (req, res)
         query = `
             UPDATE guests 
             SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
-                special_requests = $6, other_info = $7, photo_path = $8, updated_at = CURRENT_TIMESTAMP
-            WHERE id = $9
+                special_requests = $6, other_info = $7, marketing_info = $8, photo_path = $9, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $10
             RETURNING *
         `;
-        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', photoPath, id];
+        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', marketingInfo || '', photoPath, id];
     } else {
         // Fotoğraf olmadan güncelleme
         query = `
             UPDATE guests 
             SET name = $1, class = $2, alcohol = $3, cigarette = $4, cigar = $5, 
-                special_requests = $6, other_info = $7, updated_at = CURRENT_TIMESTAMP
-            WHERE id = $8
+                special_requests = $6, other_info = $7, marketing_info = $8, updated_at = CURRENT_TIMESTAMP
+            WHERE id = $9
             RETURNING *
         `;
-        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', id];
+        params = [name, guestClass, alcohol || '', cigarette || '', cigar || '', specialRequests || '', otherInfo || '', marketingInfo || '', id];
     }
 
     console.log('🔍 SQL Query:', query);

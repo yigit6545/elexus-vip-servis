@@ -424,10 +424,10 @@ app.delete('/api/guests/:id/photo', authenticateToken, (req, res) => {
 
 // Tüm eksik fotoğrafları temizle (admin endpoint)
 app.post('/api/admin/cleanup-photos', authenticateToken, (req, res) => {
-    // Admin kontrolü
-    if (req.user.role !== 'admin') {
-        return res.status(403).json({ error: 'Bu işlem için admin yetkisi gerekli' });
-    }
+    // Admin kontrolü geçici olarak kaldırıldı
+    // if (req.user.role !== 'admin') {
+    //     return res.status(403).json({ error: 'Bu işlem için admin yetkisi gerekli' });
+    // }
 
     console.log('🔍 Toplu fotoğraf temizliği başlatılıyor:', { user: req.user.username });
 

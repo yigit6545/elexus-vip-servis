@@ -927,7 +927,7 @@ class VIPService {
             const response = await fetch(`${this.apiUrl}/admin/cleanup-photos`, {
                 method: 'POST',
                 headers: {
-                    'Authorization': `Bearer ${this.token}`,
+                    'Authorization': `Bearer ${this.authToken}`,
                     'Content-Type': 'application/json'
                 }
             });

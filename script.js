@@ -158,10 +158,30 @@ class VIPService {
         
         const token = localStorage.getItem('authToken');
         const user = localStorage.getItem('user');
+        const lastLoginTime = localStorage.getItem('lastLoginTime');
         
         console.log('📱 Token var mı:', !!token);
         console.log('👤 Kullanıcı var mı:', !!user);
         console.log('🔑 Token değeri:', token ? token.substring(0, 20) + '...' : 'YOK');
+        console.log('⏰ Son giriş zamanı:', lastLoginTime);
+        
+        // 24 saat kontrolü
+        if (token && user && lastLoginTime) {
+            const now = new Date().getTime();
+            const loginTime = parseInt(lastLoginTime);
+            const hoursSinceLogin = (now - loginTime) / (1000 * 60 * 60); // Saat cinsinden
+            
+            console.log('⏰ Son girişten bu yana geçen süre:', hoursSinceLogin.toFixed(2), 'saat');
+            
+            // 2 saatten fazla geçtiyse, localStorage'ı temizle
+            if (hoursSinceLogin > 2) {
+                console.log('⚠️ 2 saat geçti, localStorage temizleniyor...');
+                this.clearAuthData();
+                this.hideMainContent();
+                this.showLoginModal();
+                return false;
+            }
+        }
         
         if (token && user) {
             try {
@@ -243,6 +263,7 @@ class VIPService {
         this.currentUser = null;
         localStorage.removeItem('authToken');
         localStorage.removeItem('user');
+        localStorage.removeItem('lastLoginTime');
     }
 
     // Login işlemi
@@ -268,6 +289,7 @@ class VIPService {
             // Token ve kullanıcı bilgilerini localStorage'a kaydet
             localStorage.setItem('authToken', this.authToken);
             localStorage.setItem('user', JSON.stringify(this.currentUser));
+            localStorage.setItem('lastLoginTime', new Date().getTime().toString());
 
             this.hideLoginModal();
             this.showMainContent();

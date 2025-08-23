@@ -1,0 +1,5 @@
+[33mdf576fa[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m  Authentication sorunu çözüldü - Sayfa yenilendiğinde tekrar giriş yapma sorunu giderildi - Misafir detayından dönüşte authentication korunuyor - Token kontrolü daha esnek hale getirildi
+[33m479ddcf[m  Marketing bilgisi özelliği eklendi - Misafir kartlarında marketing bilgisi gösterimi - Form'a marketing bilgisi input'u eklendi - Veritabanı script'i hazırlandı
+[33me81d87b[m  Fotoğraf görüntüleme sorunu çözüldü - Misafir kartlarında fotoğraf gösterimi eklendi - Fotoğraf yoksa placeholder gösterimi - CSS stilleri güncellendi
+[33m2aaf182[m  Misafir sayısı özelliği eklendi - Header'a gerçek zamanlı misafir sayacı eklendi - Filtreleme ve arama sonrasında da sayı güncelleniyor - Responsive tasarım ve renk kodlaması
+[33mbeade00[m Misafir güncelleme hatası düzeltildi - PUT endpoint ve edit mode kontrolü iyileştirildi

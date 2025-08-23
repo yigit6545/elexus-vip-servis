@@ -101,8 +101,11 @@ body {
     background: white;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
     padding: 1rem 0;
-    position: sticky;
+    position: fixed;
     top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
     z-index: 100;
 }
 
@@ -258,6 +261,13 @@ body {
     border-bottom: 1px solid #e1e8ed;
     padding: 1rem 0;
     transition: all 0.3s ease;
+    position: fixed;
+    top: 100px; /* Header'ın altında */
+    left: 0;
+    right: 0;
+    width: 100%;
+    z-index: 99;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
 }
 
 .filter-content {
@@ -305,6 +315,7 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem 1rem;
+    padding-top: 7rem; /* Header için boşluk */
 }
 
 /* Misafir listesi */
@@ -965,14 +976,19 @@ body {
 
 /* Responsive tasarım */
 @media (max-width: 768px) {
+    .header {
+        padding: 0.75rem 0;
+    }
+    
     .header-content {
         flex-direction: column;
         text-align: center;
+        gap: 0.75rem;
     }
     
     .header-left {
         align-items: center;
-        margin-bottom: 1rem;
+        margin-bottom: 0.5rem;
     }
     
     .guest-count {
@@ -982,6 +998,8 @@ body {
     
     .header-controls {
         justify-content: center;
+        flex-wrap: wrap;
+        gap: 0.75rem;
     }
     
     .search-container input {
@@ -1000,6 +1018,14 @@ body {
     .modal-content {
         width: 95%;
         padding: 1.5rem;
+    }
+    
+    .main-content {
+        padding-top: 8rem; /* Mobile'da header daha uzun */
+    }
+    
+    .filter-panel {
+        top: 120px; /* Mobile'da header'ın altında */
     }
 }
 

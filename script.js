@@ -492,6 +492,14 @@ class VIPService {
     // Misafirleri yükle
     async loadGuests() {
         try {
+            // JWT token kontrolü
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                console.log('⚠️ JWT token bulunamadı, misafirler yüklenemiyor');
+                this.showNotification('Giriş yapmanız gerekiyor!', 'error');
+                return;
+            }
+
             const guests = await this.apiRequest('/guests');
             this.guests = guests;
             this.filteredGuests = [...guests];

@@ -204,17 +204,7 @@
                 await new Promise(resolve => setTimeout(resolve, 100));
             }
             
-                    // HEMEN Authentication kontrolü
-        const token = localStorage.getItem('authToken');
-        const user = localStorage.getItem('user');
-        
-        if (!token || !user) {
-            console.log('⚠️ Token veya user bulunamadı, login ekranına yönlendiriliyor');
-            window.location.href = 'index.html';
-            return;
-        }
-        
-        console.log('✅ Authentication başarılı, etkinlikler yükleniyor...');
+                    console.log('🎵 Etkinlikler sayfası yükleniyor...');
             
             // Etkinlikleri yükle
             try {

@@ -1023,6 +1023,57 @@ body {
     .filter-panel {
         top: 120px; /* Mobile'da header'ın altında */
     }
+    
+    /* Misafir Detay Modal Mobil Düzeltmeleri */
+    .guest-detail-modal .modal-content {
+        max-height: 95vh;
+        margin: 2.5vh auto;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch; /* iOS için smooth scroll */
+    }
+    
+    .guest-detail-body {
+        padding: 1.5rem;
+    }
+    
+    .guest-details-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    
+    .detail-card {
+        padding: 1rem;
+    }
+    
+    .action-buttons {
+        position: sticky;
+        bottom: 0;
+        background: white;
+        padding: 1rem;
+        margin: 0 -1.5rem -1.5rem -1.5rem;
+        border-top: 2px solid #e3f2fd;
+        box-shadow: 0 -4px 20px rgba(0,0,0,0.1);
+        z-index: 10;
+    }
+    
+    .action-buttons button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+    
+    .action-buttons button:last-child {
+        margin-bottom: 0;
+    }
+    
+    /* Modal scroll düzeltmesi */
+    .guest-detail-modal {
+        overflow: hidden;
+    }
+    
+    .guest-detail-modal .modal-content {
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
 }
 
 @media (max-width: 480px) {
@@ -1036,6 +1087,37 @@ body {
     
     .guest-card {
         padding: 1rem;
+    }
+    
+    /* Misafir Detay Modal Küçük Ekran Düzeltmeleri */
+    .guest-detail-modal .modal-content {
+        width: 98%;
+        margin: 1vh auto;
+        max-height: 98vh;
+    }
+    
+    .guest-detail-body {
+        padding: 1rem;
+    }
+    
+    .guest-photo-large {
+        width: 80px;
+        height: 80px;
+        font-size: 1.8rem;
+    }
+    
+    .guest-basic-info h3 {
+        font-size: 1.3rem;
+    }
+    
+    .action-buttons {
+        padding: 0.75rem;
+        margin: 0 -1rem -1rem -1rem;
+    }
+    
+    .action-buttons button {
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
     }
 }
 

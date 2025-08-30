@@ -304,6 +304,16 @@ class VIPService {
                     // JSON parse hatası durumunda status code kullan
                     console.warn('JSON parse hatası, status code kullanılıyor:', parseError);
                 }
+
+                // Yetkisiz/Geçersiz oturum durumlarını kullanıcı dostu şekilde ele al
+                if (response.status === 401 || response.status === 403) {
+                    console.warn('⚠️ Yetkilendirme hatası:', response.status, errorMessage);
+                    try { this.clearAuthData(); } catch (_) {}
+                    try { this.hideMainContent && this.hideMainContent(); } catch (_) {}
+                    try { this.showLoginModal && this.showLoginModal(); } catch (_) {}
+                    try { this.showNotification && this.showNotification('Oturumunuz sona erdi. Lütfen tekrar giriş yapın.', 'error'); } catch (_) {}
+                }
+
                 throw new Error(errorMessage);
             }
 
@@ -562,7 +572,8 @@ class VIPService {
             this.renderGuests();
             this.updateGuestCount();
         } catch (error) {
-            this.showNotification('Misafirler yüklenirken hata oluştu!', 'error');
+            console.error('❌ Misafirler yüklenirken hata:', error);
+            this.showNotification(error.message || 'Misafirler yüklenirken hata oluştu!', 'error');
         }
     }
 

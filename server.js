@@ -10,8 +10,8 @@ const fs = require('fs');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Render.com için port binding
-const HOST = process.env.NODE_ENV === 'production' ? '0.0.0.0' : 'localhost';
+// Render gibi PaaS ortamlarında dışarıya açılabilmek için her zaman 0.0.0.0'a bağlan
+const HOST = '0.0.0.0';
 
 // Middleware
 app.use(cors());

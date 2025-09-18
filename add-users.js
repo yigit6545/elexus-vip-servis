@@ -2,10 +2,10 @@ const { Pool } = require('pg');
 
 // PostgreSQL veritabanı bağlantısı
 const pool = new Pool({
-    connectionString: 'postgresql://elexus_vip_db_user:YKiblvBhmWSJMgAxvtxkDhZ5jXnJc9k1@dpg-d2ec7uvdiees73fn446g-a.oregon-postgres.render.com/elexus_vip_db',
-    ssl: {
+    connectionString: process.env.DATABASE_URL || 'postgresql://elexus_vip_db_user:YKiblvBhmWSJMgAxvtxkDhZ5jXnJc9k1@dpg-d2ec7uvdiees73fn446g-a.oregon-postgres.render.com/elexus_vip_db',
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('render.com') ? {
         rejectUnauthorized: false
-    }
+    } : false
 });
 
 async function addNewUsers() {

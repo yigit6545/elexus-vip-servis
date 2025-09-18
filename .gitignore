@@ -24,7 +24,6 @@ config/
 *.sqlite3
 
 # Uploads
-uploads/
 *.jpg
 *.jpeg
 *.png

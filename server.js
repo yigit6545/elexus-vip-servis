@@ -1,3 +1,4 @@
+require('dotenv').config();
 const express = require('express');
 const { Pool } = require('pg');
 const bcrypt = require('bcryptjs');
@@ -25,18 +26,23 @@ const JWT_SECRET = process.env.JWT_SECRET || 'elexus-vip-service-secret-key-2024
 // PostgreSQL veritabanı bağlantısı
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('render.com') ? {
         rejectUnauthorized: false
-    }
+    } : false
 });
 
 // Veritabanı bağlantısını test et ve tabloları oluştur
 pool.query('SELECT NOW()', (err, res) => {
     if (err) {
-        console.error('PostgreSQL veritabanına bağlanırken hata:', err.message);
+        console.error('❌ PostgreSQL veritabanına bağlanırken hata:', err.message);
+        console.error('💡 Çözüm önerileri:');
+        console.error('   1. DATABASE_URL environment variable\'ının doğru ayarlandığından emin olun');
+        console.error('   2. Yerel PostgreSQL kullanıyorsanız SSL gerektirmeyebilir');
+        console.error('   3. .env dosyasını kontrol edin veya oluşturun');
+        console.error('   4. Veritabanı sunucusunun çalıştığından emin olun');
     } else {
-        console.log('PostgreSQL veritabanına başarıyla bağlandı.');
-        console.log(`Sunucu ${PORT} portunda çalışıyor`);
+        console.log('✅ PostgreSQL veritabanına başarıyla bağlandı.');
+        console.log(`🚀 Sunucu ${PORT} portunda çalışıyor`);
         
         // Tabloları oluştur
         createTables();

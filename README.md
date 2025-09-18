@@ -154,6 +154,24 @@ Bu proje, Elexus Casino'nun VIP servis departmanı için geliştirilmiş modern 
 - [ ] 📧 Email notifications
 - [ ] 🔄 Real-time sync
 
+## 🔧 Sorun Giderme
+
+### SSL Bağlantı Hatası
+Eğer "The server does not support SSL connections" hatası alıyorsanız:
+
+1. **Yerel PostgreSQL:** `DATABASE_URL` değişkenini ayarlayın ve SSL'i devre dışı bırakın
+2. **Render.com:** URL'nin `render.com` içerdiğinden emin olun (otomatik SSL aktif olur)
+3. `.env` dosyasını kontrol edin
+
+### Diğer Veritabanı Sorunları
+Eğer veritabanı bağlantısında sorun yaşıyorsanız:
+1. PostgreSQL sunucusunun çalıştığından emin olun
+2. Bağlantı bilgilerini kontrol edin
+3. Firewall ayarlarını kontrol edin
+4. `DATABASE_URL` environment variable'ının doğru ayarlandığından emin olun
+
+Konsol mesajlarını takip ederek hangi adımda hata aldığınızı görebilirsiniz.
+
 ## 📞 Destek
 
 Herhangi bir sorun veya öneri için lütfen iletişime geçin.

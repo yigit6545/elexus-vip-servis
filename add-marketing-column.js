@@ -3,9 +3,9 @@ const { Pool } = require('pg');
 // PostgreSQL veritabanı bağlantısı
 const pool = new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: {
+    ssl: process.env.DATABASE_URL && process.env.DATABASE_URL.includes('render.com') ? {
         rejectUnauthorized: false
-    }
+    } : false
 });
 
 async function addMarketingColumn() {
